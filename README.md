@@ -3,12 +3,12 @@
 This project demonstrates Single Sign-On (SSO) authentication using **Ping Identity**. 
 It includes a **React.js frontend** for the login page and a **Node.js backend** for handling authentication requests.
 
-## 🚀 Project Overview
+##  Project Overview
 
 - **Frontend**: Built with React.js, running on **port 3000**.
 - **Backend**: Built with Node.js, running on **port 3001**.
 
-## 🛠️ Setup Instructions
+##  Setup Instructions
 
 ### **Clone the Repository**
 ```sh
