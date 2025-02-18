@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import morgan from 'morgan';
 import router from './routes/index';
 import cors from "cors";
@@ -14,6 +15,14 @@ app.use(
   })
 );
 
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }, // secure: false for local dev
+  })
+);
 
 const PORT = process.env.PORT || 3001;
 
