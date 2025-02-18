@@ -29,6 +29,7 @@ const Login = () => {
             height: "100vh",
             background: "linear-gradient(to right, #f8fafc, #e7eff9)",
             margin: 0,
+            position: "relative",
         },
         card: {
             background: "white",
@@ -93,10 +94,24 @@ const Login = () => {
             color: "#777",
             marginTop: "10px",
         },
+        logo: {
+            position: "absolute",
+            top: "5px",
+            right: "10px",
+            width: "200px", // Increased size
+            height: "200px", // Increased size
+        },
     };
 
     return (
         <div style={styles.container}>
+            {/* Top Right Logo */}
+            <img
+                src="https://image.pitchbook.com/xXsUuHVF1NN9lBgDJObUYJr6m2O1716375546115_200x200"
+                alt="Company Logo"
+                style={styles.logo}
+            />
+
             <div style={styles.card}>
                 <h2 style={styles.title}>SSO Login</h2>
                 <p style={styles.subtitle}>Powered by Ping Identity</p>
