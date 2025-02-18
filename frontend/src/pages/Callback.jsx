@@ -35,7 +35,27 @@ const Callback = () => {
     handleAuthCallback();
   }, [navigate]);
 
-  return <h2>Processing authentication...</h2>;
+  const styles = {
+    container: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      background: "linear-gradient(to right, #f8fafc, #e7eff9)",
+      textAlign: "center",
+    },
+    message: {
+      fontSize: "20px",
+      fontWeight: "500",
+      color: "#333",
+    },
+  };
+
+  return (
+    <div style={styles.container}>
+      <h2 style={styles.message}>Processing authentication...</h2>
+    </div>
+  );
 };
 
 export default Callback;

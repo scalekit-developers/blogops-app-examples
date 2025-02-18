@@ -20,18 +20,131 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const styles = {
+    container: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      background: "linear-gradient(to right, #f8fafc, #e7eff9)",
+      margin: 0,
+      position: "relative",
+    },
+    card: {
+      background: "white",
+      padding: "35px",
+      borderRadius: "12px",
+      boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)",
+      textAlign: "center",
+      width: "350px",
+    },
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      color: "#222",
+      marginBottom: "5px",
+    },
+    subtitle: {
+      fontSize: "14px",
+      color: "#666",
+      marginBottom: "20px",
+    },
+    divider: {
+      width: "100%",
+      height: "1px",
+      backgroundColor: "#ddd",
+      marginBottom: "20px",
+      border: "none",
+    },
+    table: {
+      width: "100%",
+      marginBottom: "20px",
+      borderCollapse: "collapse",  // Removes unnecessary space
+    },
+    tableHeader: {
+      backgroundColor: "#f1f1f1",
+      textAlign: "left",
+      padding: "10px",
+      fontWeight: "600",
+    },
+    tableCell: {
+      padding: "10px",
+      borderBottom: "1px solid #ddd",
+      textAlign: "left",
+      width: "50%",
+      wordBreak: "break-word",  // Prevents long text from breaking layout
+    },
+    button: {
+      width: "80%",
+      padding: "12px",
+      border: "none",
+      borderRadius: "6px",
+      fontSize: "16px",
+      fontWeight: "500",
+      cursor: "pointer",
+      marginBottom: "12px",
+      transition: "all 0.3s ease-in-out",
+      textAlign: "center",
+      display: "block",  // Centers the button
+      margin: "0 auto",  // Ensures proper alignment
+    },
+    primaryButton: {
+      background: "#222d3b",
+      color: "white",
+    },
+    primaryButtonHover: {
+      background: "#1a2431",
+    },
+    footer: {
+      fontSize: "12px",
+      color: "#777",
+      marginTop: "10px",
+    },
+    logo: {
+      position: "absolute",
+      top: "5px",
+      right: "10px",
+      width: "200px", // Increased size
+      height: "200px", // Increased size
+    },
+  };
+
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
-      <div className="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Dashboard</h2>
-        
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Dashboard</h2>
+
         {user ? (
           <div className="text-center">
-            <p className="text-gray-700 text-lg mb-4">Welcome<strong>{user.name}</strong>!</p>
-            <p className="text-gray-600 text-md mb-6">Logged in as: <strong>{user.email}</strong></p>
+            <p style={styles.subtitle}>Welcome <strong>{user.name}</strong>!</p>
+            <hr style={styles.divider} />
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.tableHeader}>Detail</th>
+                  <th style={styles.tableHeader}>Information</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={styles.tableCell}>Email</td>
+                  <td style={styles.tableCell}>{user.email}</td>
+                </tr>
+                <tr>
+                  <td style={styles.tableCell}>Given Name</td>
+                  <td style={styles.tableCell}>{user.given_name}</td>
+                </tr>
+                <tr>
+                  <td style={styles.tableCell}>Family Name</td>
+                  <td style={styles.tableCell}>{user.family_name}</td>
+                </tr>
+              </tbody>
+            </table>
             <button
               onClick={handleLogout}
-              className="w-full py-3 bg-red-500 text-white rounded-lg text-lg hover:bg-red-600 transition duration-300"
+              style={{ ...styles.button, ...styles.primaryButton }}
+              onMouseOver={(e) => (e.target.style.background = styles.primaryButtonHover.background)}
+              onMouseOut={(e) => (e.target.style.background = styles.primaryButton.background)}
             >
               Logout
             </button>
@@ -43,5 +156,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
