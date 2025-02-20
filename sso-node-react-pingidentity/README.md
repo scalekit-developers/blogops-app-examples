@@ -72,7 +72,7 @@ SCALEKIT_CLIENT_SECRET=
 ### 2. Install the dependencies and start the servers:
 
 ```sh
-npm install-all && npm start
+npm run install-all && npm start
 ```
 
 ### **Running the Project**
