@@ -17,58 +17,24 @@ git clone https://github.com/ScaleupInfra/scalekit-examples-ping-indentity.git
 cd scalekit-examples-ping-indentity
 ```
 
-### **Follow these steps to set up and run the backend server:**
+### **Follow these steps to set up the server:**
 
-### 1. Navigate to the backend directory:
-
-```sh
-cd backend
-```
-
-### 2. Install dependencies:
+### 1. Set up the environment:
 
 ```sh
-npm i
+cp backend/.env.example backend/.env
 ```
-
-### 3. Create a .env file in the backend directory:
-
-```sh
-touch .env
-```
-
-### 4. Add the following environment variables to .env:
-
+add the following credentials in the `.env`, 
 ```sh
 SCALEKIT_ENVIRONMENT_URL=
 SCALEKIT_CLIENT_ID=
 SCALEKIT_CLIENT_SECRET=
 ```
 
-### 5. Start the backend server:
+### 3. Install the dependencies and start the servers:
 
 ```sh
-npm start
-```
-
-### **Follow these steps to set up and run the frontend Setup (React.js)**
-
-### 1. Navigate to the Frontend directory:
-
-```sh
-cd frontend
-```
-
-### 2. Install dependencies:
-
-```sh
-npm i
-```
-
-### 3. Start the Frontendserver:
-
-```sh
-npm start
+npm install-all && npm start
 ```
 
 ### **Running the Project**
