@@ -138,6 +138,10 @@ const Dashboard = () => {
                   <td style={styles.tableCell}>Family Name</td>
                   <td style={styles.tableCell}>{user.family_name}</td>
                 </tr>
+                <tr>
+                  <td style={styles.tableCell}>employee_number</td>
+                  <td style={styles.tableCell}>{user.employee_number}</td>
+                </tr>
               </tbody>
             </table>
             <button
