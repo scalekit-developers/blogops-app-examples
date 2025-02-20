@@ -1,0 +1,92 @@
+# Dependencies
+**/node_modules
+**/package-lock.json
+**/yarn.lock
+**/jspm_packages
+**/bower_components
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.development
+**/.env.test
+**/.env.production
+**/.env.*.local
+
+# IDE files
+**/.vscode
+**/.idea
+**/*.suo
+**/*.ntvs*
+**/*.njsproj
+**/*.sln
+**/*.sw?
+**/.tern-port
+
+# Debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/debug.log
+
+# Build outputs
+**/dist
+**/build
+**/.next
+**/out
+**/.nuxt
+**/build/Release
+**/.vuepress/dist
+**/public
+**/.serverless
+
+# Testing
+**/coverage
+**/.nyc_output
+**/lib-cov
+
+# Cache directories
+**/.npm
+**/.eslintcache
+**/.cache
+**/.parcel-cache
+**/.grunt
+**/.fusebox
+**/.dynamodb
+
+# Runtime data
+**/pids
+**/*.pid
+**/*.seed
+**/*.pid.lock
+
+# TypeScript
+**/*.tsbuildinfo
+
+# Packaging
+**/*.tgz
+**/.yarn-integrity
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional: Backend specific
+**/uploads
+**/*.log
+**/logs
+**/temp
+**/tmp
+
+# Optional: Frontend specific
+**/.cache
+**/.sass-cache
+**/css/style.css.map
+
+# REPL history
+**/.node_repl_history
