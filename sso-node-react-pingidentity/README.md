@@ -1,20 +1,57 @@
 # Node.js with React Tutorial: Single Sign-On (SSO) with Ping Identity
-
-This project demonstrates Single Sign-On (SSO) authentication using **Ping Identity**.
-It includes a **React.js frontend** for the login page and a **Node.js backend** for handling authentication requests.
+This project enables **Single Sign-On (SSO) authentication** using **Ping Identity**, allowing users to securely access multiple applications with a single login. It integrates a **React.js frontend** for user authentication and a **Node.js backend** for handling authentication requests and token validation.
 
 ## Project Overview
 
-- **Frontend**: Built with React.js, running on **port 3000**.
-- **Backend**: Built with Node.js, running on **port 3001**.
+This project provides a complete **Single Sign-On (SSO) authentication system** using **Ping Identity** as the Identity Provider (IdP). It consists of:
+
+- **Frontend (React.js)**: A user-friendly login interface that allows users to authenticate using **Social Login (Google, Ping Identity)** or **Enterprise SAML**. Runs on **port 3000**.
+- **Backend (Node.js)**: Handles authentication requests, integrates with Ping Identity, and processes user authentication tokens securely. Runs on **port 3001**.
+
+By following this guide, you will set up an end-to-end authentication flow where users can sign in once and access multiple applications securely using **SSO with Ping Identity**.
+
+![user login flow](docs/assets/user-login-flow.png)
+## How It Works
+
+### **1. User Login**
+   - The user accesses the application and selects **Social Login (Google, Ping Identity)** or **Enterprise SAML**.
+
+### **2. Authentication Request**
+   - The **frontend** sends a login request to the **Node.js backend**, which redirects the user to **Ping Identity** for authentication.
+
+### **3. Identity Verification**
+   - Ping Identity authenticates the user and returns a **secure authentication token**.
+
+### **4. Token Validation & Session Creation**
+   - The **backend validates** the token using the **Scalekit SDK**, verifies user permissions, and creates a session.
+
+### **5. Access Granted**
+   - The user is redirected to the application with **SSO-enabled access** to all linked services.
+
+By implementing this process, the project ensures a **secure, scalable, and seamless** SSO experience, making authentication easier and more efficient.
+
+## Prerequisites
+
+If Node.js and npm are not installed, download and install them from [Node.js official website](https://nodejs.org/).
+Ensure that you have **Node.js** and **npm** installed on your system. You can verify the installation using the following commands:
+
+```sh
+node -v && npm -v 
+```
+## Technology Stack
+
+- **React.js**: Frontend framework for building the user authentication interface.
+- **Node.js & Express**: Backend server for processing authentication requests.
+- **Ping Identity**: Identity Provider (IdP) that manages user authentication and token issuance.
+- **SAML & OAuth2**: Authentication protocols for secure user login and token validation.
+- **Scalekit SDK**: Facilitates secure integration between the application and Ping Identity.
 
 ## Setup Instructions
 
 ### **Clone the Repository**
 
 ```sh
-git clone https://github.com/ScaleupInfra/scalekit-examples-ping-indentity.git
-cd scalekit-examples-ping-indentity
+git clone https://github.com/ScaleupInfra/scalekit-examples-ping-indentity.git && cd scalekit-examples-ping-indentity
 ```
 
 ### **Follow these steps to set up the server:**
@@ -24,6 +61,7 @@ cd scalekit-examples-ping-indentity
 ```sh
 cp backend/.env.example backend/.env
 ```
+
 add the following credentials in the `.env`, 
 ```sh
 SCALEKIT_ENVIRONMENT_URL=
@@ -31,7 +69,7 @@ SCALEKIT_CLIENT_ID=
 SCALEKIT_CLIENT_SECRET=
 ```
 
-### 3. Install the dependencies and start the servers:
+### 2. Install the dependencies and start the servers:
 
 ```sh
 npm install-all && npm start
