@@ -41,7 +41,7 @@ If Node.js and npm are not installed, download and install them from [Node.js of
 Ensure that you have **Node.js** and **npm** installed on your system. You can verify the installation using the following commands:
 
 ```sh
-node -v && npm -v 
+node -v && npm -v
 ```
 
 ## Technology Stack
@@ -57,7 +57,7 @@ node -v && npm -v
 ### **Clone the Repository**
 
 ```sh
-git clone https://github.com/ScaleupInfra/scalekit-examples-ping-indentity.git && cd scalekit-examples-ping-indentity
+git clone git@github.com:saif-at-scalekit/authn-examples.git && cd scalekit-examples-ping-indentity
 ```
 
 ### **Follow these steps to set up the server:**
