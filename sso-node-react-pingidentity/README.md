@@ -1,4 +1,5 @@
 # Node.js with React Tutorial: Single Sign-On (SSO) with Ping Identity
+
 This project enables **Single Sign-On (SSO) authentication** using **Ping Identity**, allowing users to securely access multiple applications with a single login. It integrates a **React.js frontend** for user authentication and a **Node.js backend** for handling authentication requests and token validation.
 
 ## Project Overview
@@ -11,6 +12,7 @@ This project provides a complete **Single Sign-On (SSO) authentication system** 
 By following this guide, you will set up an end-to-end authentication flow where users can sign in once and access multiple applications securely using **SSO with Ping Identity**.
 
 ![user login flow](docs/assets/user-login-flow.png)
+
 ## How It Works
 
 ### **1. User Login**
@@ -19,10 +21,13 @@ By following this guide, you will set up an end-to-end authentication flow where
 ### **2. Authentication Request**
    - The **frontend** sends a login request to the **Node.js backend**, which redirects the user to **Ping Identity** for authentication.
 
-### **3. Identity Verification**
-   - Ping Identity authenticates the user and returns a **secure authentication token**.
+### **3. Identity Verification with MFA**
+   - Ping Identity authenticates the user by verifying their **username and password**.
+   - The system then prompts the user for **Multi-Factor Authentication (MFA)** to enhance security.
+   - The user enters the **MFA code** received via their chosen method (e.g., SMS, authenticator app).
 
 ### **4. Token Validation & Session Creation**
+   - After successful authentication, Ping Identity returns a **secure authentication token**.
    - The **backend validates** the token using the **Scalekit SDK**, verifies user permissions, and creates a session.
 
 ### **5. Access Granted**
@@ -38,6 +43,7 @@ Ensure that you have **Node.js** and **npm** installed on your system. You can v
 ```sh
 node -v && npm -v 
 ```
+
 ## Technology Stack
 
 - **React.js**: Frontend framework for building the user authentication interface.
@@ -62,7 +68,8 @@ git clone https://github.com/ScaleupInfra/scalekit-examples-ping-indentity.git &
 cp backend/.env.example backend/.env
 ```
 
-add the following credentials in the `.env`, 
+Add the following credentials in the `.env` file:
+
 ```sh
 SCALEKIT_ENVIRONMENT_URL=
 SCALEKIT_CLIENT_ID=
@@ -75,10 +82,13 @@ SCALEKIT_CLIENT_SECRET=
 npm run install-all && npm start
 ```
 
-### **Running the Project**
+## **Running the Project**
 
 Once both the frontend and backend are running:
 
 1. Open http://localhost:3000 in your browser.
-2. Click on Social Login or Enterprise SAML.
-3. You'll be redirected to Ping Identity for authentication.
+2. Click on **Social Login** or **Enterprise SAML**.
+3. You'll be redirected to **Ping Identity** for authentication.
+4. After entering your **username and password**, the system will prompt for **MFA verification**.
+5. Enter the **MFA code** received via your authentication method.
+6. Once verified, **Scalekit** processes the authentication token and redirects you to the main application with **SSO-enabled access**.
