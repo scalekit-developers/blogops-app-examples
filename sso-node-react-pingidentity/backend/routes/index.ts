@@ -32,8 +32,8 @@ var scalekit = new ScalekitClient(
   process.env.SCALEKIT_CLIENT_SECRET || ''
 );
 
-const connectionId = 'conn_59505293326811411';
-const organizationID = 'org_59505282790721026'; 
+const connectionId = process.env.SCALEKIT_CONNECTION_ID || '';
+const organizationID = process.env.SCALEKIT_ORGANIZATION_ID || ''; 
 const redirectURI = 'http://localhost:3000/callback';
 
 router.get('/', (req, res) => {

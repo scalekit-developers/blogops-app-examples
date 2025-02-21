@@ -37,7 +37,7 @@
 **/.nuxt
 **/build/Release
 **/.vuepress/dist
-**/public
+
 **/.serverless
 
 # Testing
