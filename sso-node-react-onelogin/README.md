@@ -57,7 +57,7 @@ node -v && npm -v
 ### **Clone the Repository**
 
 ```sh
-git clone git@github.com:saif-at-scalekit/authn-examples.git && cd scalekit-examples-ping-indentity
+git clone git@github.com:saif-at-scalekit/authn-examples.git && cd authn-examples/sso-node-react-onelogin
 ```
 
 ### **Follow these steps to set up the server:**
