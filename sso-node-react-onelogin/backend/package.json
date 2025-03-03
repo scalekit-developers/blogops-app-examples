@@ -1,0 +1,26 @@
+{
+  "name": "scalekit-node-sso",
+  "version": "1.0.0",
+  "description": "A example demonstrating how to use sso using scalekit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "bun run index.ts"
+  },
+  "author": "Saif",
+  "license": "ISC",
+  "dependencies": {
+    "@scalekit-sdk/node": "^1.0.5",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "nodemon": "^3.1.4"
+  }
+}
