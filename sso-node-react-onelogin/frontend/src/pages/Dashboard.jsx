@@ -218,8 +218,8 @@ const Dashboard = () => {
                 <td className="dashboard-table-cell">{user.family_name || 'N/A'}</td>
               </tr>
               <tr>
-                <td className="dashboard-table-cell">Provider</td>
-                <td className="dashboard-table-cell">{getProviderName()}</td>
+                <td className="dashboard-table-cell">Client ID</td>
+                <td className="dashboard-table-cell">{user.client_id || 'N/A'}</td>
               </tr>
             </tbody>
           </table>
