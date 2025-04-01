@@ -24,14 +24,14 @@ To explore and run an example project:
 
 1. **Clone the repository**:
 
-   ```sh
+   ```bash
    git clone git@github.com:saif-at-scalekit/authn-examples.git
    cd scalekit-sdk-examples
    ```
 
 2. Navigate to an example folder:
 
-   ```sh
+   ```bash
    cd example-project-folder
    ```
 
