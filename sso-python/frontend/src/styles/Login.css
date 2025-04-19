@@ -1,0 +1,288 @@
+:root {
+  --primary-color: #4f5eff;
+  --text-color: #191531;
+  --background-color: #020205;
+  --card-color: #191531;
+  --text-light: #a0a0b8;
+  --border-color: #2a2545;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: #ffffff;
+  height: 100vh;
+}
+
+/* Main container with sidebar and content */
+.main-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Documentation Sidebar Styles */
+.docs-sidebar {
+  width: 25%;
+  background-color: var(--card-color);
+  color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.sidebar-logo h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-section h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.sidebar-links {
+  list-style: none;
+}
+
+.sidebar-links li {
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: block;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.sidebar-links a:hover {
+  color: var(--primary-color);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.sidebar-footer p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* Login Content Styles */
+.login-content {
+  width: 75%;
+  margin-left: 25%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-panel {
+  background-color: var(--card-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.logo-section {
+  background-color: var(--card-color);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.login-section {
+  padding: 2rem;
+}
+
+.login-description {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.google-login {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  color: var(--text-color);
+}
+
+.google-login:hover {
+  background-color: #f8f9fa;
+}
+
+.google-login:active {
+  background-color: #f1f5f9;
+}
+
+.saml-login {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.saml-login:hover {
+  background-color: #4251eb;
+}
+
+.saml-login:active {
+  background-color: #3a47d5;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-light);
+  font-size: 0.875rem;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner-container {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+}
+
+/* Lock icon alignment fix */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(79, 94, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+.spinner-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-icon svg {
+  color: #ffffff;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #ff4d4d;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+
+  .docs-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 1.5rem;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .login-content {
+    width: 100%;
+    margin-left: 0;
+    min-height: auto;
+    padding: 1.5rem;
+  }
+}
