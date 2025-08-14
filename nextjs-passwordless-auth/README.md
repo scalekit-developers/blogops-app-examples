@@ -1,4 +1,3 @@
-
 # Next.js Passwordless Auth with Scalekit
 
 This project demonstrates a production-ready passwordless authentication flow using Next.js 15 (App Router) and [Scalekit](https://scalekit.com) for sending magic links or OTPs to users' email addresses.
@@ -14,6 +13,10 @@ Below are screenshots of the main flows:
 
 ### OTP Screen
 ![OTP](public/otp.png)
+
+
+### Dashboard
+![Dashboard](public/dashboard.png)
 
 ### Magic Link Mail
 ![Magic Link Mail](public/magil-link-mail.png)
@@ -106,15 +109,40 @@ Below are screenshots of the main flows:
 
 ```
 src/
-  app/
-  page.tsx                # Main login UI
-  api/
-  auth/
-    send-passwordless/  # API route to send magic link/OTP
-    verify-otp/         # API route to verify OTP
-  verify-magic-link/    # API route to verify magic link
-  lib/
-  session-store.ts        # (Demo) In-memory session store (not used in UI)
+├── app/
+│   ├── page.tsx                # Main login UI
+│   ├── dashboard/
+│   │   └── page.tsx            # Dashboard page
+│   ├── verify-magic-link/
+│   │   └── page.tsx            # Magic link verification UI
+│   ├── api/
+│   │   ├── auth/
+│   │   │   ├── send-passwordless/
+│   │   │   │   └── route.ts    # API route to send magic link/OTP
+│   │   │   ├── verify-otp/
+│   │   │   │   └── route.ts    # API route to verify OTP
+│   │   │   ├── logout/
+│   │   │   │   └── route.ts    # API route for logout
+│   │   │   └── session/
+│   │   │       └── route.ts    # API route for session
+│   │   ├── send-passwordless/
+│   │   │   └── route.ts        # API route to send magic link/OTP (duplicate)
+│   │   ├── verify-magic-link/
+│   │   │   └── route.ts        # API route to verify magic link
+│   │   └── verify-otp/
+│   │       └── route.ts        # API route to verify OTP (duplicate)
+│   └── globals.css             # Global styles
+│   └── layout.tsx              # App layout
+│   └── favicon.ico             # Favicon
+├── lib/
+│   └── session-store.ts        # (Demo) In-memory session store (not used in UI)
+public/
+├── sign-in.png                 # Screenshot: Sign-In
+├── otp.png                     # Screenshot: OTP
+├── dashboard.png               # Screenshot: Dashboard
+├── magil-link-mail.png         # Screenshot: Magic Link Mail
+├── scalekit.png                # Scalekit logo
+├── ...                         # Other public assets
 ```
 
 ## 📚 References
