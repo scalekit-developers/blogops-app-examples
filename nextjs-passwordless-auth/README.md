@@ -1,143 +1,125 @@
 
-# Passwordless Authentication Sample App
+# Next.js Passwordless Auth with Scalekit
 
-A modern Next.js application demonstrating passwordless authentication using Scalekit, supporting both verification codes (OTP) and magic links.
+This project demonstrates a production-ready passwordless authentication flow using Next.js 15 (App Router) and [Scalekit](https://scalekit.com) for sending magic links or OTPs to users' email addresses.
 
-## Features
+## 🏗️ Architecture & Flow
 
-- **Dual Authentication**: Choose between One-Time Password (OTP) and Magic Link authentication
-- **Flexible Flow**: Users can enter a code or click a magic link for login
-- **Simple UI**: Clean, responsive interface with a step-by-step flow
-- **Secure Sessions**: HTTP-only cookies and robust session management
-- **User-Friendly**: Clear error messages and input validation
+## 📸 Screenshots
 
-## How it Works
+Below are screenshots of the main flows:
 
-1. **Email Entry**: User submits their email address
-2. **Email Delivery**: A verification email is sent with a code and/or magic link
-3. **Authentication Options**:
-  - Enter the 6-digit verification code in the app, **or**
-  - Click the magic link in the email
-4. **Dashboard Access**: Upon successful authentication, users are redirected to a protected dashboard
+### Sign-In Screen
+![Sign-In](public/sign-in.png)
 
-## Authentication Types
+### OTP Screen
+![OTP](public/otp.png)
 
-Configure your Scalekit environment to support one of the following passwordless authentication types:
+### Magic Link Mail
+![Magic Link Mail](public/magil-link-mail.png)
 
-- **OTP**: Only verification codes (6-digit numbers)
-- **LINK**: Only magic links (clickable URLs)
-- **LINK_OTP**: Both verification codes and magic links
+**Frontend:**
 
-## Tech Stack
+- Built with Next.js App Router and React.
+- Users enter their email, receive a magic link or OTP, and verify their identity.
+- No dashboard or session-persisted UI is included (demo stops at login success).
 
-- **Frontend**: Next.js 14 (App Router) with TypeScript
-- **Styling**: Tailwind CSS for modern, responsive design
-- **Authentication**: Scalekit SDK for passwordless flows
+**Backend/API:**
 
-## Getting Started
+- Next.js API routes under `/api/auth/` handle sending and verifying passwordless codes.
+- Uses Scalekit Node SDK to send emails and verify codes/magic links.
+- Session logic is removed for simplicity; see Scalekit docs for production session management.
 
-### Prerequisites
+**Flow:**
 
-- Node.js 18+
-- A Scalekit account and environment
+1. User enters email and submits.
+2. `/api/auth/send-passwordless` sends a magic link/OTP to the email using Scalekit.
+3. User enters OTP (or clicks magic link).
+4. `/api/auth/verify-otp` verifies the code; on success, UI shows "Login successful!".
 
-### Environment Variables
+## 🛠️ Tech Stack & Libraries
 
-Create a `.env.local` file in the project root with the following variables:
+- [Next.js](https://nextjs.org/) (App Router)
+- [React](https://react.dev/)
+- [Scalekit Node SDK](https://www.npmjs.com/package/@scalekit-sdk/node)
+- [Tailwind CSS](https://tailwindcss.com/) for styling
 
-```env
-# Scalekit Configuration
-SCALEKIT_ENVIRONMENT_URL=your_environment_url
-SCALEKIT_CLIENT_ID=your_client_id
-SCALEKIT_CLIENT_SECRET=your_client_secret
+## 🚀 Getting Started
 
-# App Configuration
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
+1. **Clone the repo:**
 
-### Installation
+ ```bash
+ git clone <repo-url>
+ cd nextjs-passwordless-auth
+ ```
 
-1. Install dependencies:
+2. **Install dependencies:**
 
-  ```bash
-  npm install
-  # or
-  pnpm install
-  ```
+ ```bash
+ npm install
+ # or yarn or pnpm
+ ```
 
-2. Start the development server:
+3. **Configure environment variables:**
 
-  ```bash
-  npm run dev
-  # or
-  pnpm dev
-  ```
+- Copy `.env.example` to `.env.local` and fill in your Scalekit credentials:
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+   ```env
+   SCALEKIT_ENVIRONMENT_URL=...
+   SCALEKIT_CLIENT_ID=...
+   SCALEKIT_CLIENT_SECRET=...
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   ```
 
-## Project Structure
+4. **Run the dev server:**
+
+ ```bash
+ npm run dev
+ ```
+
+5. **Open the app:**
+
+- Visit [http://localhost:3000](http://localhost:3000)
+
+## 📝 How It Works
+
+1. **Email Submission:**
+
+- User enters their email and submits the form.
+- The frontend calls `/api/auth/send-passwordless`.
+- The API route uses Scalekit to send a magic link or OTP to the email.
+
+2. **OTP Verification:**
+
+- User enters the OTP received in their email.
+- The frontend calls `/api/auth/verify-otp`.
+- The API route verifies the OTP with Scalekit.
+- On success, the UI shows a success message.
+
+3. **Magic Link Verification:**
+
+- If the user clicks the magic link, `/api/verify-magic-link` is called.
+- The API route verifies the link token with Scalekit.
+- (Session logic is omitted in this demo.)
+
+## 📦 File Structure
 
 ```
 src/
-├── app/
-│   ├── api/
-│   │   ├── auth/
-│   │   │   ├── send-passwordless/    # API route to send magic link/OTP
-│   │   │   ├── verify-otp/           # API route to verify OTP
-│   │   │   ├── logout/               # API route to log out
-│   │   │   └── session/              # API route to get session info
-│   │   ├── send-passwordless/        # (legacy/alias) API route
-│   │   ├── verify-magic-link/        # API route to verify magic link
-│   │   └── verify-otp/               # (legacy/alias) API route
-│   ├── dashboard/                    # Protected dashboard page
-│   │   └── page.tsx
-│   ├── verify-magic-link/            # Magic link verification page
-│   │   └── page.tsx
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx                      # Home/login page
-├── lib/
-│   └── session-store.ts              # JWT session helpers
-├── middleware.ts                     # Auth middleware
+  app/
+  page.tsx                # Main login UI
+  api/
+  auth/
+    send-passwordless/  # API route to send magic link/OTP
+    verify-otp/         # API route to verify OTP
+  verify-magic-link/    # API route to verify magic link
+  lib/
+  session-store.ts        # (Demo) In-memory session store (not used in UI)
 ```
 
-## API Endpoints
+## 📚 References
 
-- `POST /api/auth/send-passwordless` - Start passwordless authentication (send code/magic link)
-- `POST /api/auth/verify-otp` - Verify OTP codes
-- `GET /api/verify-magic-link` - Handle magic link verification
-- `POST /api/auth/logout` - Log out user (clear session)
-- `GET /api/auth/session` - Get current session info
-
-## Scalekit Configuration
-
-To enable different authentication types, configure your Scalekit dashboard:
-
-1. Go to **Authentication > Auth Methods**
-2. Find the **Passwordless** section
-3. Select your preferred authentication type:
-  - **OTP**: Only verification codes
-  - **LINK**: Only magic links
-  - **LINK_OTP**: Both codes and magic links
-
-## Customization
-
-This sample app is designed for learning and rapid prototyping. You can:
-
-- Modify UI components in the `app/` directory
-- Add new authentication flows
-- Implement user management features
-- Add more protected routes
-- Customize error handling and validation
-- Change passwordless types in the Scalekit dashboard
-
-## Learn More
-
-- [Scalekit Documentation](https://docs.scalekit.com)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
+- [Scalekit Quickstart](https://docs.scalekit.com/passwordless/quickstart/)
+- [Scalekit Docs](https://docs.scalekit.com/)
+- [Next.js Docs](https://nextjs.org/docs)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)

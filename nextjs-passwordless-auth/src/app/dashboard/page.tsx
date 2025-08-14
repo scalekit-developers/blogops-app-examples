@@ -51,13 +51,17 @@ export default function DashboardPage() {
         <div>
           <div className="flex flex-col items-center gap-3 mb-10">
             <Image src="/scalekit.png" alt="Scalekit Logo" width={128} height={40} className="w-32 h-auto" priority />
-            <span className="text-xl font-bold text-[#ededed] tracking-tight">Scalekit Demo</span>
           </div>
           <nav className="mt-8">
             <div className="text-[#b3b3c6] text-sm font-medium mb-2">Navigation</div>
             <ul className="space-y-2">
               <li className="text-[#4f5eff] font-semibold">Dashboard</li>
-              {/* Add more nav items here if needed */}
+              <li>
+                <a href="https://docs.scalekit.com/passwordless/quickstart/" target="_blank" rel="noopener noreferrer" className="text-[#4f5eff] underline text-sm font-bold">Scalekit Quickstart</a>
+              </li>
+              <li>
+                <a href="https://docs.scalekit.com/" target="_blank" rel="noopener noreferrer" className="text-[#4f5eff] underline text-sm font-bold">Scalekit Docs</a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -91,7 +95,7 @@ export default function DashboardPage() {
                 <div className="bg-[#232336] rounded-xl p-6 flex flex-col items-center">
                   <div className="text-[#ededed] text-lg font-bold mb-1">About Scalekit Auth</div>
                   <div className="text-[#b3b3c6] text-sm mb-2">This dashboard demonstrates secure, passwordless authentication using magic links and OTPs, powered by Scalekit and JWT-based sessions.</div>
-                  <ul className="text-[#b3b3c6] text-sm list-disc pl-5">
+                  <ul className="text-[#b3b3c6] text-sm list-disc pl-5 mb-2">
                     <li>Persistent, secure sessions</li>
                     <li>Modern UI/UX</li>
                     <li>Magic Link & OTP login</li>
