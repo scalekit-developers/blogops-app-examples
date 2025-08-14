@@ -1,0 +1,98 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.eggs
+*.env
+.env
+*.sqlite3
+*.db
+venv/
+
+# FastAPI/Starlette
+instance/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test/coverage
+.coverage
+htmlcov/
+*.log
+*.out
+*.tmp
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Node (if any remnants)
+node_modules/
+
+# Frontend (if any remnants)
+frontend/
+
+# Misc
+*.bak
+*.swp
+*.swo
+
+# Deployment
+*.pem
+*.crt
+*.key
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Database
+*.sqlite
+*.db
+
+# Reports
+reports/
+
+# pytest
+.cache/
+
+# Scalekit SDK
+scalekit.log
+
+# Ignore test results
+*.pytest_cache/
+
+# Ignore notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Ignore migrations
+migrations/
+
+# Ignore coverage
+coverage.xml
+
+# Ignore compiled files
+*.so
+*.dll
+*.exe
+*.out
+*.app
+
+# Ignore backup files
+*~
+
+# Ignore other IDEs
+.idea/
+
+# Ignore old frontend
+frontend_deleted/

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+sqlalchemy
+alembic
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
+httpx
+pytest
+pytest-asyncio
+scalekit-sdk-python
