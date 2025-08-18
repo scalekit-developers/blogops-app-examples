@@ -110,39 +110,35 @@ Below are screenshots of the main flows:
 ```
 src/
 ├── app/
-│   ├── page.tsx                # Main login UI
+│   ├── page.tsx                  # Main login UI
 │   ├── dashboard/
-│   │   └── page.tsx            # Dashboard page
+│   │   └── page.tsx              # Dashboard page
 │   ├── verify-magic-link/
-│   │   └── page.tsx            # Magic link verification UI
+│   │   └── page.tsx              # Magic link verification UI (client page)
 │   ├── api/
-│   │   ├── auth/
-│   │   │   ├── send-passwordless/
-│   │   │   │   └── route.ts    # API route to send magic link/OTP
-│   │   │   ├── verify-otp/
-│   │   │   │   └── route.ts    # API route to verify OTP
-│   │   │   ├── logout/
-│   │   │   │   └── route.ts    # API route for logout
-│   │   │   └── session/
-│   │   │       └── route.ts    # API route for session
-│   │   ├── send-passwordless/
-│   │   │   └── route.ts        # API route to send magic link/OTP (duplicate)
-│   │   ├── verify-magic-link/
-│   │   │   └── route.ts        # API route to verify magic link
-│   │   └── verify-otp/
-│   │       └── route.ts        # API route to verify OTP (duplicate)
-│   └── globals.css             # Global styles
-│   └── layout.tsx              # App layout
-│   └── favicon.ico             # Favicon
+│   │   └── auth/                 # Auth API namespace
+│   │       ├── send-passwordless/ # Send magic link / OTP
+│   │       │   └── route.ts
+│   │       ├── verify-otp/       # Verify OTP code
+│   │       │   └── route.ts
+│   │       ├── verify-magic-link/ # Verify magic link token (GET & POST)
+│   │       │   └── route.ts
+│   │       ├── logout/           # Destroy session
+│   │       │   └── route.ts
+│   │       └── session/          # Session introspection
+│   │           └── route.ts
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Root layout
+│   └── favicon.ico               # Favicon
 ├── lib/
-│   └── session-store.ts        # (Demo) In-memory session store (not used in UI)
+│   └── session-store.ts          # In-memory session store (demo only)
 public/
-├── sign-in.png                 # Screenshot: Sign-In
-├── otp.png                     # Screenshot: OTP
-├── dashboard.png               # Screenshot: Dashboard
-├── magil-link-mail.png         # Screenshot: Magic Link Mail
-├── scalekit.png                # Scalekit logo
-├── ...                         # Other public assets
+├── sign-in.png                   # Screenshot: Sign-In
+├── otp.png                       # Screenshot: OTP
+├── dashboard.png                 # Screenshot: Dashboard
+├── magil-link-mail.png           # Screenshot: Magic Link Mail
+├── scalekit.png                  # Scalekit logo
+└── ...                           # Other public assets
 ```
 
 ## 📚 References
