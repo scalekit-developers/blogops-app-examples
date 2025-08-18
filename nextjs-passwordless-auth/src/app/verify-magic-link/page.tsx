@@ -22,7 +22,7 @@ export default function VerifyMagicLinkPage() {
       setError("We couldn't find your login session. Please use the same browser and device where you requested the magic link, or request a new link.");
       return;
     }
-    fetch("/api/verify-magic-link", {
+  fetch("/api/auth/verify-magic-link", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ linkToken, authRequestId }),

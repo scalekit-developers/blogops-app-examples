@@ -6,7 +6,7 @@ const PUBLIC_PATHS = [
   "/", // login page
   "/api/auth/send-passwordless",
   "/api/auth/verify-otp",
-  "/api/verify-magic-link",
+  "/api/auth/verify-magic-link",
   "/verify-magic-link",
 ];
 

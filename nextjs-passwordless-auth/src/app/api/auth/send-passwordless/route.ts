@@ -14,14 +14,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email is required." }, { status: 400 });
     }
     // Magic link URI for your app
-    const magiclinkAuthUri = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/verify-magic-link`;
+  const magiclinkAuthUri = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/auth/verify-magic-link`;
     const sendResponse = await scalekit.passwordless.sendPasswordlessEmail(email, {
       expiresIn: 300,
       magiclinkAuthUri,
     });
+    // Construct full magic link (optional if Scalekit already emails it, but useful for debugging or custom mail provider)
+    const magicLink = `${magiclinkAuthUri}?link_token=${encodeURIComponent(sendResponse.linkToken)}&auth_request_id=${encodeURIComponent(sendResponse.authRequestId)}`;
     return NextResponse.json({
       authRequestId: sendResponse.authRequestId,
       passwordlessType: sendResponse.passwordlessType,
+      magicLink,
     });
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : "Failed to send magic link.";
