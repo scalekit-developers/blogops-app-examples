@@ -1,22 +1,40 @@
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import (APIRouter, Depends, HTTPException, Request, Response,
+                     status)
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.jwt import create_access_token, decode_access_token
 from app.core.scalekit import (send_passwordless_email,
                                verify_passwordless_email)
+from app.db.session import get_db
 from app.models.auth import (EmailRequest, MagicLinkVerifyRequest,
                              OTPVerifyRequest, PasswordlessSendResponse,
                              PasswordlessVerifyResponse)
 
 router = APIRouter()
 
+
+def get_current_user(request: Request):
+    """Dependency to extract current user email from JWT cookie (returns None if absent/invalid)."""
+    token = request.cookies.get("access_token")
+    if not token:
+        return None
+    payload = decode_access_token(token)
+    if not payload:
+        return None
+    return payload.get("sub")
+
 # Send passwordless email (magic link or OTP)
 @router.post("/send-passwordless", response_model=PasswordlessSendResponse)
-async def send_passwordless(req: EmailRequest, request: Request):
+async def send_passwordless(
+    req: EmailRequest,
+    request: Request,
+    current_user: str | None = Depends(get_current_user)
+):
     try:
-        existing_user = _get_current_user(request)
-        # Only block if the token is valid and not expired
-        if existing_user is not None and isinstance(existing_user, str) and existing_user != "":
+        # Block if already authenticated with a valid token
+        if current_user:
             raise HTTPException(status_code=409, detail="Already authenticated. Please log out before starting a new sign-in.")
 
         # Validate magiclink_auth_uri using urllib.parse for reliability
@@ -66,7 +84,11 @@ async def send_passwordless(req: EmailRequest, request: Request):
 
 # Verify OTP
 @router.post("/verify-otp", response_model=PasswordlessVerifyResponse)
-async def verify_otp(req: OTPVerifyRequest, response: Response):
+async def verify_otp(
+    req: OTPVerifyRequest,
+    response: Response,
+    db: Session = Depends(get_db),  # Example DI; not used yet but shows pattern
+):
     # Defensive: check for missing auth_request_id
     if not req.auth_request_id:
         raise HTTPException(
@@ -116,7 +138,11 @@ async def verify_otp(req: OTPVerifyRequest, response: Response):
 
 # Verify magic link
 @router.post("/verify-magic-link", response_model=PasswordlessVerifyResponse)
-async def verify_magic_link(req: MagicLinkVerifyRequest, response: Response):
+async def verify_magic_link(
+    req: MagicLinkVerifyRequest,
+    response: Response,
+    db: Session = Depends(get_db),  # Example DI; not used yet but shows pattern
+):
     try:
         resp = await verify_passwordless_email(
             link_token=req.link_token,
@@ -161,23 +187,28 @@ async def verify_magic_link(req: MagicLinkVerifyRequest, response: Response):
 
 
 
-def _get_current_user(request: Request):
-    token = request.cookies.get("access_token")
-    if not token:
-        return None
-    payload = decode_access_token(token)
-    if not payload:
-        return None
-    return payload.get("sub")
-
 @router.get("/session")
-async def get_session(request: Request):
-    user = _get_current_user(request)
-    if not user:
+async def get_session(current_user: str | None = Depends(get_current_user)):
+    if not current_user:
         return JSONResponse({"email": None}, status_code=200)
-    return {"email": user}
+    return {"email": current_user}
 
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("access_token", path="/")
     return {"message": "Logged out"}
+
+
+@router.get("/db-ping")
+def db_ping(db: Session = Depends(get_db)):
+    """Simple DB dependency usage (executes a trivial statement)."""
+    db.execute(text("SELECT 1"))
+    return {"ok": True}
+
+
+@router.get("/protected")
+def protected(current_user: str | None = Depends(get_current_user)):
+    """Example protected endpoint requiring an authenticated user."""
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+    return {"email": current_user, "message": "Protected content"}

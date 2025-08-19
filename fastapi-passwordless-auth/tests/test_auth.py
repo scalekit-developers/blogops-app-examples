@@ -77,3 +77,42 @@ def test_jwt_token_structure():
     # Here, just check that the response to verify_otp sets a cookie if possible
     # This is a placeholder for actual JWT decode logic
     # You can expand this if you expose a /decode endpoint or similar
+
+
+def test_session_endpoint_unauthenticated():
+    client.cookies.clear()
+    r = client.get("/api/auth/session")
+    assert r.status_code == 200
+    assert r.json()["email"] is None
+
+
+def test_session_endpoint_authenticated():
+    token = create_access_token({"sub": "user@example.com"})
+    client.cookies.set("access_token", token)
+    r = client.get("/api/auth/session")
+    assert r.status_code == 200
+    assert r.json()["email"] == "user@example.com"
+    client.cookies.clear()
+
+
+def test_protected_requires_auth():
+    client.cookies.clear()
+    r = client.get("/api/auth/protected")
+    assert r.status_code == 401
+
+
+def test_protected_with_auth():
+    token = create_access_token({"sub": "protected@example.com"})
+    client.cookies.set("access_token", token)
+    r = client.get("/api/auth/protected")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["email"] == "protected@example.com"
+    assert "Protected content" in body["message"]
+    client.cookies.clear()
+
+
+def test_db_ping():
+    r = client.get("/api/auth/db-ping")
+    assert r.status_code == 200
+    assert r.json()["ok"] is True
