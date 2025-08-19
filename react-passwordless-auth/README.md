@@ -11,6 +11,8 @@ End‑to‑end sample implementing email passwordless authentication (Magic Link
 
 > Goal: Demonstrate a clean, backend‑agnostic hook & component pattern you can adapt while remaining minimal and readable.
 
+![Access](/public/access.png)
+
 ---
 
 ## Quick Start
@@ -55,6 +57,8 @@ From the project root a single command starts both API & client:
 pnpm run dev
 ```
 
+![sign-in](/public/sign-in.png)
+
 Default ports:
 
 - Client: <http://localhost:5173>
@@ -65,13 +69,15 @@ Magic link verification path: `http://localhost:5173/passwordless/verify` (APP_B
 ### 4. Flow
 
 1. Enter email on Sign In.
-1. Hook calls `/api/auth/passwordless/send` (Scalekit triggers email).
-1. Depending on `passwordlessType`:
+2. Hook calls `/api/auth/passwordless/send` (Scalekit triggers email).
+3. Depending on `passwordlessType`:
 	- `LINK`: Wait for magic link (auto-verifies when opened).
 	- `OTP`: Navigate to Verify page & enter/paste 6-digit code (auto submit).
 	- `LINK_OTP`: Either click link or enter code.
-1. On success: server sets HttpOnly JWT cookie; UI shows welcome with email.
-1. Logout clears cookie and local state.
+4. On success: server sets HttpOnly JWT cookie; UI shows welcome with email.
+5. Logout clears cookie and local state.
+
+![otp](/public/otp.png)
 
 Restart / Recovery:
 
