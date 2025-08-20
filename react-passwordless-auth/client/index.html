@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Passwordless Auth Demo</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- Geist Mono via Google Fonts equivalent (fallback to monospace) -->
+		<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+		<style>
+			:root { --color-bg-start:#020421; --color-bg-end:#09299a; --panel-bg:rgba(255,255,255,0.06); --panel-border:rgba(255,255,255,0.12); --accent:#4d7dff; --accent-hover:#6d94ff; --danger:#ff4d61; --radius:14px; }
+			* { box-sizing:border-box; }
+			body { margin:0; font-family:'Geist_Mono','Source Code Pro',monospace; background:radial-gradient(circle at 30% 20%, var(--color-bg-end) 0%, var(--color-bg-start) 60%); min-height:100vh; color:#eef1f8; -webkit-font-smoothing:antialiased; }
+			#root { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:3rem 1.25rem; }
+			a { color: var(--accent); text-decoration:none; }
+			a:hover { text-decoration:underline; }
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+</html>

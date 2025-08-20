@@ -1,0 +1,12 @@
+{
+  "name": "react-passwordless-auth-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n SERVER,CLIENT -c green,cyan \"pnpm --filter ./server dev\" \"pnpm --filter ./client dev\"",
+    "build": "pnpm --filter ./server build && pnpm --filter ./client build",
+    "test": "pnpm --recursive test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
