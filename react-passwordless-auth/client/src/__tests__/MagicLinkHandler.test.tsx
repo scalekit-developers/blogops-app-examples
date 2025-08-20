@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AuthProvider } from '../auth/AuthProvider';
 import { MagicLinkHandler } from '../components/MagicLinkHandler';

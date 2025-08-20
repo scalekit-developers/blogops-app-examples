@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { usePasswordlessAuth } from '../../auth/usePasswordlessAuth';
+import { usePasswordlessAuth } from '../auth/usePasswordlessAuth';
 
 describe('usePasswordlessAuth', () => {
   beforeEach(() => {
