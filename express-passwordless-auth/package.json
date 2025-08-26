@@ -1,0 +1,40 @@
+{
+  "name": "express-passwordless-auth-sample",
+  "version": "0.1.0",
+  "description": "Sample Express.js + Scalekit passwordless authentication implementation",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "prestart": "node src/docs/generate-openapi.js",
+    "start": "node src/server.js",
+    "predev": "node src/docs/generate-openapi.js",
+    "dev": "nodemon",
+    "swagger:build": "node src/docs/generate-openapi.js",
+    "lint": "echo 'Add ESLint config'"
+  },
+  "keywords": ["express", "scalekit", "passwordless", "auth"],
+  "author": "Sample",
+  "license": "MIT",
+  "dependencies": {
+  "@scalekit-sdk/node": "^1.0.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+  "ioredis": "^5.4.1",
+    "joi": "^17.12.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+  "connect-redis": "^7.1.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
