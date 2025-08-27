@@ -1,0 +1,25 @@
+{
+  "name": "nuxt-passwordless-scalekit-sample",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "lint": "echo 'no lint config'"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+  "@scalekit-sdk/node": "latest",
+    "cookie": "^0.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "nuxt": "^3.12.0",
+    "ofetch": "^1.4.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
