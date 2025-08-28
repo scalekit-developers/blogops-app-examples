@@ -19,7 +19,12 @@ export default defineEventHandler( async (event) => {
   logInfo(event, 'passwordless.resend success', { authRequestId: body.authRequestId, passwordless_type: passwordlessType });
   return shaped;
   } catch (e: any) {
-    logError(event, 'passwordless.resend error', { authRequestId: body.authRequestId, err: e?.message });
-    throw createError({ statusCode: 500, statusMessage: e?.message || 'resend failed' });
+    const rawMsg = (e?.data?.statusMessage || e?.message || '').toString().toLowerCase();
+    let friendly = 'Could not resend email. Try again shortly.';
+    if (rawMsg.includes('expired')) friendly = 'Request expired. Start over to get a fresh code.';
+    else if (rawMsg.includes('too many') || rawMsg.includes('rate')) friendly = 'Too many resends. Please wait a bit.';
+    else if (rawMsg.includes('not found')) friendly = 'This sign‑in request no longer exists. Start over.';
+    logError(event, 'passwordless.resend error', { authRequestId: body.authRequestId, err: e?.message, friendly });
+    throw createError({ statusCode: 500, statusMessage: friendly });
   }
 });

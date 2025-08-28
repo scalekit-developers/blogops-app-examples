@@ -2,7 +2,9 @@
   <div class="shell">
     <header class="site-header card-surface">
       <div class="brand">
-        <span class="logo-circle">SK</span>
+        <NuxtLink to="/" class="logo-link" aria-label="Scalekit Home">
+          <span class="logo-text">Scalekit</span>
+        </NuxtLink>
         <h1>Passwordless Sample</h1>
       </div>
       <nav class="nav">
@@ -34,12 +36,14 @@
   </div>
 </template>
 
+
 <style scoped>
 .shell { min-height:100vh; display:flex; flex-direction:column; gap:1.25rem; width:100%; max-width:1200px; margin:0 auto; padding:1.25rem 1.5rem 2.5rem; }
 .site-header { display:grid; grid-template-columns: auto 1fr auto; gap:1.25rem; align-items:center; }
 .brand { display:flex; align-items:center; gap:.75rem; }
 .brand h1 { font-size:1.1rem; margin:0; background:var(--c-accent-grad); -webkit-background-clip:text; color:transparent; letter-spacing:.5px; }
-.logo-circle { width:40px; height:40px; border-radius:50%; background:var(--c-accent-grad); display:grid; place-items:center; font-weight:700; font-size:.9rem; box-shadow:0 0 0 3px rgba(255,255,255,.05); }
+.logo-link { display:inline-flex; align-items:center; text-decoration:none; line-height:0; }
+.logo-text { padding:.45rem .8rem; font-weight:700; font-size:.85rem; background:var(--c-accent-grad); -webkit-background-clip:text; color:transparent; letter-spacing:.5px; border:1px solid rgba(255,255,255,.12); border-radius:var(--radius-sm); box-shadow:0 2px 6px -2px rgba(0,0,0,.4); }
 .nav { display:flex; gap:.75rem; }
 .nav-link { padding:.45rem .85rem; border-radius:var(--radius-sm); font-size:.85rem; font-weight:500; color:var(--c-text-dim); transition:.25s background, .25s color; }
 .nav-link:hover, .nav-link.router-link-active { background:rgba(255,255,255,.07); color:var(--c-text); text-decoration:none; }

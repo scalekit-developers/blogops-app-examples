@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BaseInput from './ui/BaseInput.vue';
+import BaseButton from './ui/BaseButton.vue';
 const email = ref('');
 const auth = useAuth();
 const sent = computed(()=> !!auth.authRequestId);
@@ -22,12 +24,14 @@ async function onSubmit() {
       <p class="sub">Use passwordless authentication. We’ll send a secure link and/or code.</p>
     </div>
     <label for="email" class="lbl">Email address</label>
-    <input id="email" v-model="email" type="email" required :disabled="sending" placeholder="you@example.com" />
-    <button class="btn" :disabled="sending">
-      <span v-if="sending">Sending…</span>
-      <span v-else-if="sent">Sent ✓ Check inbox</span>
-      <span v-else>Send Link / Code</span>
-    </button>
+    <BaseInput id="email" v-model="email" type="email" required :disabled="sending" placeholder="you@example.com" autocomplete="email" />
+    <BaseButton :loading="sending" :disabled="sending || !email.trim()">
+      <template #default>
+        <span v-if="sending">Sending…</span>
+        <span v-else-if="sent">Sent ✓ Check inbox</span>
+        <span v-else>Send Link / Code</span>
+      </template>
+    </BaseButton>
     <transition name="fade">
       <p v-if="auth.error" class="err">{{ auth.error }}</p>
     </transition>

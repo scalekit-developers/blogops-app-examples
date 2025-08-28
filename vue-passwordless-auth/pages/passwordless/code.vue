@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CodeEntry from '@/components/ui/CodeEntry.vue';
+import BaseButton from '@/components/ui/BaseButton.vue';
 const auth = useAuth();
 // If no authRequestId (direct visit), bounce to login
 if (process.client) {
@@ -27,8 +29,8 @@ function resend() { auth.resend(); }
       <p class="desc" v-else>Check your inbox for a one-time passcode.</p>
     </div>
     <form @submit.prevent="submit" class="form">
-      <input v-model="code" placeholder="123456" maxlength="10" autofocus />
-      <button class="btn" :disabled="submitting || !code.trim()">{{ submitting ? 'Verifying…' : 'Verify Code' }}</button>
+      <CodeEntry v-model="code" :length="6" :disabled="submitting" @submit="submit" />
+      <BaseButton :loading="submitting" :disabled="submitting || code.length!==6">{{ submitting ? 'Verifying…' : 'Verify Code' }}</BaseButton>
     </form>
     <p v-if="auth.error" class="err">{{ auth.error }}</p>
     <div class="meta-bar">

@@ -26,15 +26,30 @@ export default defineEventHandler(async (event) => {
     if (!verifyResp?.email) throw createError({ statusCode: 400, statusMessage: 'No email in verification response' });
     // Ensure no BigInt fields leak
     const safe = JSON.parse(JSON.stringify(verifyResp, (_k, v) => typeof v === 'bigint' ? v.toString() : v));
-    await setUserSession(event, verifyResp.email);
+  // Persist minimal passwordless metadata so dashboard can show Mode/Auth Request after reload.
+  // (authRequestId is not a secret; it identifies the flow instance)
+    let passwordlessType: any = (verifyResp as any).passwordless_type || (verifyResp as any).passwordlessType || null;
+    if (typeof passwordlessType === 'number') {
+      const map: Record<number, string> = { 1: 'OTP', 2: 'LINK', 3: 'LINK_OTP' };
+      passwordlessType = map[passwordlessType] || passwordlessType;
+    }
+  const authRequestId = (verifyResp as any).auth_request_id || (verifyResp as any).authRequestId || null;
+  await setUserSession(event, verifyResp.email, { passwordlessType, authRequestId });
     logInfo(event, 'passwordless.verify success', { email: verifyResp.email });
     return { ok: true, email: safe.email };
   } catch (e: any) {
     if (e?.status === 429) {
       logError(event, 'passwordless.verify rate limit', { ...meta });
-      throw createError({ statusCode: 429, statusMessage: 'Too many attempts. Restart flow.' });
+      throw createError({ statusCode: 429, statusMessage: 'Too many attempts. Please wait a few minutes then start over.' });
     }
-    logError(event, 'passwordless.verify error', { ...meta, err: e?.message });
-    throw createError({ statusCode: 400, statusMessage: e?.message || 'verification failed' });
+    const rawMsg = (e?.data?.statusMessage || e?.message || '').toString().toLowerCase();
+    let friendly = 'Verification failed. Please try again.';
+    if (rawMsg.includes('expired')) friendly = 'Code expired. Click Start Over to request a new one.';
+    else if (rawMsg.includes('invalid') || rawMsg.includes('mismatch')) friendly = 'Incorrect code. Double‑check and try again.';
+    else if (rawMsg.includes('too many') || rawMsg.includes('rate')) friendly = 'Too many attempts. Wait a bit then restart the flow.';
+    else if (rawMsg.includes('not found')) friendly = 'This sign‑in request was not found or already used. Start over.';
+    else if (rawMsg.includes('auth_request_id')) friendly = 'Missing or mismatched sign‑in request. Use the original browser or start over.';
+    logError(event, 'passwordless.verify error', { ...meta, err: e?.message, friendly });
+    throw createError({ statusCode: 400, statusMessage: friendly });
   }
 });

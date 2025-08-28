@@ -1,26 +1,18 @@
-# Nuxt 3 / Vue 3 Passwordless Authentication (Scalekit) Sample
+# Nuxt Passwordless Auth (Scalekit)
 
-Production‑style passwordless authentication demo (OTP, Magic Link, Hybrid) using Scalekit + Nuxt 3 (Nuxt 4 ready). It showcases clear separation of concerns (API routes, composables, Pinia store, middleware), robust verification logic, SSR session hydration, logging, and a themed UI.
+Minimal, end‑to‑end example of email passwordless auth (OTP, magic link, hybrid) with Nuxt + Scalekit. Focus: clarity, small surface area, understandable flow.
 
-> Runs on Nuxt 3 today. Folder + runtime config layout is forward compatible with Nuxt 4.
+![Dashboard](/public/dashboard.png)
 
-## Highlights
+## What You Get (In Plain Words)
 
-| Area | What This Example Shows |
-|------|-------------------------|
-| Auth Methods | OTP, Magic Link, and LINK_OTP hybrid (user can use either) |
-| Scalekit Integration | Thin server wrappers around `@scalekit-sdk/node` (`send`, `resend`, `verify`) |
-| API Design | `/api/passwordless/*` + `/api/auth/*` isolated from UI concerns |
-| Session | httpOnly JWT cookie (1d expiry) + server plugin hydration (`plugins/session.server.ts`) |
-| State | Pinia store manages: user, authRequestId, passwordlessType, expiry |
-| Client Logic | `useAuth` composable encapsulates send/resend/verify, error + verifying states, localStorage persistence |
-| Magic Link Safety | Enforces presence of `auth_request_id` when verifying link tokens (defensive) |
-| BigInt Handling | Responses normalized to avoid JSON serialization errors |
-| Enum Mapping | Numeric passwordless_type values mapped to human‑readable strings |
-| Logging | Structured JSON logger (request id, contextual meta) in `server/utils/logger.ts` |
-| UI/UX | Gradient themed layout, dedicated OTP page, resilient buttons, clear status & error messaging |
-| Middleware | `auth.global` guards protected routes + `definePageMeta({ requiresAuth: true })` support |
-| Resilience | Abort + timeout guarding send, duplicate click prevention for verify, localStorage recovery |
+* Send + resend passwordless email
+* Verify via code OR link
+* Session cookie (httpOnly JWT) + SSR hydration
+* Single composable (`useAuth`) + Pinia store
+* Simple UI components (email form, status pill, code entry)
+* Route protection via middleware
+* Friendly error messages
 
 ## Folder Structure
 
@@ -32,9 +24,9 @@ vue-passwordless-auth/
 ├─ layouts/
 │  └─ default.vue              # Global shell (header/footer/error boundary)
 ├─ components/
-│  ├─ AuthEmailForm.vue        # Email capture + send action
-│  ├─ AuthStatus.vue           # Header auth pill + logout/login
-│  └─ OtpForm.vue              # (Legacy placeholder, flow now uses dedicated page)
+│  ├─ AuthEmailForm.vue        # Email capture + send
+│  ├─ AuthStatus.vue           # Auth pill + logout/login
+│  └─ ui/                      # Small primitive components
 ├─ composables/
 │  └─ useAuth.ts               # Core client auth logic (send/resend/verify, persistence)
 ├─ middleware/
@@ -69,99 +61,41 @@ vue-passwordless-auth/
 └─ README.md
 ```
 
-## Environment Variables
+## Setup (5 Steps)
 
-Add these to `.env` (see `.env.example`):
+1. Copy env file: `cp .env.example .env`
+2. Fill: `SCALEKIT_ENV_URL`, `SCALEKIT_CLIENT_ID`, `SCALEKIT_CLIENT_SECRET`, `JWT_SECRET`
+3. (Optional) Set `PASSWORDLESS_TYPE` (OTP | LINK | LINK_OTP)
+4. Install deps: `pnpm install` (or npm / yarn)
+5. Run dev: `pnpm dev` → open <http://localhost:3000>
 
-| Variable | Description |
-|----------|-------------|
-| SCALEKIT_ENV_URL | Your Scalekit environment base URL (https://...). |
-| SCALEKIT_CLIENT_ID | Scalekit client id for the environment. |
-| SCALEKIT_CLIENT_SECRET | Scalekit client secret (server-only). |
-| JWT_SECRET | Secret for signing session JWT (change in production). |
-| PASSWORDLESS_TYPE | Preferred type hint if SDK response omits (OTP, LINK, LINK_OTP). |
+Scalekit dashboard magic link redirect should point to: `/passwordless/verify`
 
-Magic Link Redirect (configure in Scalekit dashboard):
-`https://localhost:3000/passwordless/verify`
+## How It Works (In 6 Lines)
 
-## Quick Start
+1. User enters email → `/api/passwordless/send`
+![Email](/public/email.png)
+2. Email arrives (code +/or link)
+3. User enters code at `/passwordless/code` OR clicks link to `/passwordless/verify`
+![OTP](/public/OTP.png)
+1. Server verifies → sets httpOnly session cookie
+2. Client fetches `/api/auth/session` → Pinia store hydrates
+3. Protected pages check store (middleware)
 
-```bash
-# Install deps
-pnpm install      # or npm install / yarn
+Nuances: link verification enforces `auth_request_id`; localStorage keeps in‑progress request; separate `verifying` vs `loading` states.
 
-# Copy env file
-cp .env.example .env
-# Fill in the values from your Scalekit dashboard
+## SSR
 
-# Run dev
-pnpm dev
-```
+`plugins/session.server.ts` reads the cookie and seeds Pinia on first paint.
 
-Open <http://localhost:3000> → Login → enter email. Depending on configured mode:
+## Security (Short)
 
-* OTP: You receive a code → redirected to `/passwordless/code`
-* LINK: You click the magic link → `/passwordless/verify` processes token
-* LINK_OTP: Either method works; both link and code are sent
+Secrets server-side only; JWT 1d expiry; add rate limiting + revocation + HTTPS hardening for prod.
 
-Successful verification sets a session cookie and dashboard becomes available.
+## Troubleshooting (Quick)
 
-## Flow Overview
+500 send → env vars wrong. 400 link → missing auth_request_id or redirect mismatch. Invalid code → expired/too many attempts. Build Invalid URL → empty env vars.
 
-```text
-send (email) ──> user inbox ──> (resend?) ──> verify (code OR link)
-   │                                         │
-   └─────────────────────────────────────────┴── set httpOnly session cookie
-                                  fetch /api/auth/session → Pinia
-```
+## BigInt
 
-Key nuances:
-
-* Magic link verification requires `auth_request_id` (defensive; some backends demand origin pairing).
-* LocalStorage retains in‑progress request (`authRequestId`, type, expiry) after reload.
-* `verifying` state distinct from generic `loading` to avoid UI lockups.
-
-## SSR & Hydration
-
-The session cookie (JWT) is read on the server by `plugins/session.server.ts` during SSR and seeds the Pinia store for initial render. After verification the client still calls `/api/auth/session` to rehydrate immediately.
-
-## Security Considerations
-
-| Concern | Current Measure | Hardening Ideas |
-|---------|-----------------|-----------------|
-| Secrets | Only server reads `clientSecret` | Use secret manager (Vault, SSM) |
-| Rate Limiting | Not implemented | Add IP+email throttling (Redis / edge proxy) |
-| Session Replay | 1d JWT expiry | Rotate secrets, maintain revocation list |
-| Brute Force OTP | SDK side + optional rate limit | Add attempt counter + lockout |
-| Transport | Assume HTTPS in deployment | Enforce HSTS, secure cookies with `secure: true` in prod |
-
-## Extending Ideas
-
-| Goal | Approach |
-|------|----------|
-| Resend Cooldown | Track last send timestamp; disable button (store/composable) |
-| Toast Notifications | Add a lightweight emitter (e.g., tiny event bus) + component |
-| Dark/Light Toggle | Expose CSS variables, persist preference in localStorage |
-| Refresh Tokens | Add `/api/auth/refresh` issuing short-lived access token |
-| Additional Factors | Chain WebAuthn after passwordless verification |
-
-## Troubleshooting
-
-| Symptom | Likely Cause | Resolution |
-|---------|--------------|-----------|
-| 500 on send | Bad `SCALEKIT_*` vars or invalid ENV URL | Verify .env values & that ENV URL is absolute https:// |
-| 400 magic link | Missing `auth_request_id` or mismatched redirect URL | Ensure link includes both query params; match dashboard config |
-| Code always invalid | Expired or too many attempts | Resend and ensure within expiry window |
-| Build fails `Invalid URL` | SDK initialized with empty env vars | Provide all env vars before starting dev |
-
-## Notes on BigInt Fields
-
-Some SDK responses may contain BigInt values; routes JSON.stringify with a replacer to convert them to strings, avoiding runtime serialization errors.
-
-## License
-
-MIT. Harden (rate limiting, refresh/revocation, audit logging) before production use.
-
----
-
-Made for rapid learning of passwordless patterns with Scalekit + Nuxt. Feel free to adapt and iterate.
+Server coerces BigInt to string in JSON responses.

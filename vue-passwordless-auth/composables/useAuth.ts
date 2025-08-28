@@ -6,6 +6,8 @@ export function useAuth() {
   const error = ref<string | null>(null);
   const verifying = ref(false); // specifically for code/link verification actions
   const LS_KEY = 'pw_auth_req';
+  const RESEND_COOLDOWN_MS = 30000; // 30s cooldown
+  const nextResendAt = ref<number | null>(null);
   // Safety: ensure not stuck in loading (e.g. HMR edge case)
   if (loading.value) loading.value = false;
 
@@ -50,11 +52,13 @@ export function useAuth() {
 
   async function resend() {
     if (!store.authRequestId) return;
+    if (nextResendAt.value && Date.now() < nextResendAt.value) return; // cooldown active
     loading.value = true; error.value = null;
     try {
       const resp = await $fetch('/api/passwordless/resend', { method: 'POST', body: { authRequestId: store.authRequestId } });
       store.setAuthRequest(resp);
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ a: store.authRequestId, t: store.passwordlessType, e: store.expiresAt })); } catch {}
+      nextResendAt.value = Date.now() + RESEND_COOLDOWN_MS;
+      try { localStorage.setItem(LS_KEY, JSON.stringify({ a: store.authRequestId, t: store.passwordlessType, e: store.expiresAt })); } catch {}
     } catch (e: any) {
       error.value = e?.data?.statusMessage || 'Failed to resend';
     } finally { loading.value = false; }
@@ -90,6 +94,7 @@ export function useAuth() {
 
   async function logout() {
     await $fetch('/api/auth/logout', { method: 'POST' });
+    try { localStorage.removeItem(LS_KEY); } catch {}
     store.reset();
   }
 
@@ -118,6 +123,18 @@ export function useAuth() {
     } catch {}
   }
 
-  return { ...store, loading, error, verifying, send, resend, verifyCode, verifyLink, fetchSession, logout, resetFlow };
+  // One-time session fetch on first use in client if not yet loaded
+  if (process.client && !store.sessionLoaded) {
+    fetchSession().finally(()=> { store.sessionLoaded = true; });
+  }
+
+  // Augment the live store proxy so consumers can use auth.user / auth.isAuthenticated reactively
+  // (Spreading breaks reactivity because it copies values out of the proxy)
+  if (!(store as any).__augmented) {
+    Object.assign(store, { loading, error, verifying, send, resend, verifyCode, verifyLink, fetchSession, logout, resetFlow, nextResendAt });
+    (store as any).__augmented = true;
+  }
+  return store as typeof store & { loading: typeof loading; error: typeof error; verifying: typeof verifying };
   // verifying kept separate from generic loading
 }
+// (Removed previous global client hydration to avoid Pinia usage outside app initialization)

@@ -7,14 +7,21 @@ const showOtp = computed(()=> auth.passwordlessType === 'OTP' || auth.passwordle
 const showLinkInfo = computed(()=> auth.passwordlessType === 'LINK' || auth.passwordlessType === 'LINK_OTP');
 
 // Poll session (simple) if link-only while waiting for user to click email magic link
-let pollTimer: any;
-watch(showLinkInfo, (v) => {
+let pollTimer: any; let visHandler: any;
+function startPolling() {
   clearInterval(pollTimer);
-  if (v && !showOtp.value) {
-    pollTimer = setInterval(()=> auth.fetchSession(), 4000);
+  if (showLinkInfo.value && !showOtp.value) {
+    pollTimer = setInterval(()=> {
+      if (document.visibilityState === 'visible') auth.fetchSession();
+    }, 4000);
   }
-});
-onUnmounted(()=> clearInterval(pollTimer));
+}
+watch(showLinkInfo, () => startPolling());
+if (process.client) {
+  visHandler = () => { if (document.visibilityState === 'visible') auth.fetchSession(); };
+  document.addEventListener('visibilitychange', visHandler);
+}
+onUnmounted(()=> { clearInterval(pollTimer); if (visHandler) document.removeEventListener('visibilitychange', visHandler); });
 </script>
 <template>
   <div class="login-shell">
@@ -35,7 +42,10 @@ onUnmounted(()=> clearInterval(pollTimer));
       <p v-if="showLinkInfo && showOtp" class="hint">You can either click the link OR use the code.</p>
       <div class="actions">
         <button v-if="showLinkInfo" class="btn outline" @click="auth.fetchSession()" :disabled="auth.loading">Refresh Status</button>
-        <button class="btn outline" @click="auth.resend()" :disabled="auth.loading">Resend</button>
+        <button class="btn outline" @click="auth.resend()" :disabled="auth.loading || (auth.nextResendAt && Date.now() < auth.nextResendAt)">
+          <span v-if="auth.nextResendAt && Date.now() < auth.nextResendAt">Resend in {{ Math.ceil((auth.nextResendAt - Date.now())/1000) }}s</span>
+          <span v-else>Resend</span>
+        </button>
         <button class="btn outline" @click="auth.resetFlow()" type="button">Start Over</button>
       </div>
     </div>

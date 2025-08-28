@@ -20,14 +20,22 @@ export default defineEventHandler(async (event) => {
   // SDK expects (email: string, options: { magiclinkAuthUri, ... })
   const resp = await sk.passwordless.sendPasswordlessEmail(body.email, { magiclinkAuthUri });
   // Attach configured type if SDK response omits it (some environments may not echo type)
-  const passwordlessType = (resp as any).passwordless_type || (resp as any).passwordlessType || useRuntimeConfig().public.passwordlessType;
+  let passwordlessType: any = (resp as any).passwordless_type || (resp as any).passwordlessType || useRuntimeConfig().public.passwordlessType;
+  if (typeof passwordlessType === 'number') {
+    const map: Record<number, string> = { 1: 'OTP', 2: 'LINK', 3: 'LINK_OTP' };
+    passwordlessType = map[passwordlessType] || passwordlessType;
+  }
   const shapedRaw = { ...resp, passwordless_type: passwordlessType } as any;
   // Remove or stringify BigInt fields to avoid serialization error
   const shaped = JSON.parse(JSON.stringify(shapedRaw, (_k, v) => typeof v === 'bigint' ? v.toString() : v));
   logInfo(event, 'passwordless.send success', { ...reqMeta, authRequestId: (shaped as any).auth_request_id || (shaped as any).authRequestId, passwordless_type: passwordlessType });
   return shaped; // raw enough for store mapping
   } catch (e: any) {
-    logError(event, 'passwordless.send error', { ...reqMeta, err: e?.message });
-    throw createError({ statusCode: 500, statusMessage: e?.message || 'send failed' });
+    const rawMsg = (e?.data?.statusMessage || e?.message || '').toString().toLowerCase();
+    let friendly = 'Failed to send email. Please try again.';
+    if (rawMsg.includes('rate') || rawMsg.includes('too many')) friendly = 'Too many requests. Wait a minute before trying again.';
+    else if (rawMsg.includes('invalid email') || rawMsg.includes('email')) friendly = 'Email address appears invalid. Check and try again.';
+    logError(event, 'passwordless.send error', { ...reqMeta, err: e?.message, friendly });
+    throw createError({ statusCode: 500, statusMessage: friendly });
   }
 });

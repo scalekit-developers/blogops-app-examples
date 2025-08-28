@@ -9,7 +9,7 @@ export default defineNuxtPlugin(() => {
       const sess = getUserSession(event);
       if (sess) {
         const store = useAuthStore();
-        store.setSession({ user: { email: sess.email } });
+        store.setSession({ user: { email: sess.email }, passwordlessType: sess.passwordlessType, authRequestId: sess.authRequestId });
       }
     } catch {
       // ignore

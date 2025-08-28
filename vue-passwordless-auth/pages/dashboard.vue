@@ -1,7 +1,11 @@
 <script setup lang="ts">
 definePageMeta({ requiresAuth: true });
 const auth = useAuth();
-async function doLogout() { await auth.logout(); navigateTo('/login'); }
+const meta = computed(()=> usePasswordlessMeta(auth.passwordlessType));
+async function doLogout() { await auth.logout(); }
+if (process.client) {
+  watch(() => auth.isAuthenticated, (v) => { if (!v) navigateTo('/login'); });
+}
 </script>
 <template>
   <div class="dash">
@@ -16,8 +20,8 @@ async function doLogout() { await auth.logout(); navigateTo('/login'); }
       </div>
     </header>
     <section class="panel card-surface">
-      <p v-if="auth.user">You are logged in using a passwordless <strong>{{ auth.passwordlessType || 'session' }}</strong> flow. Your session cookie is httpOnly and will expire in 1 day.</p>
-      <p v-else>Loading session...</p>
+  <p v-if="auth.user">You signed in with <strong>{{ meta.label }}</strong>. {{ meta.info }} Your session cookie is httpOnly and expires in 1 day.</p>
+      <p v-else>Signing out… Redirecting.</p>
       <div class="grid">
         <div class="mini card-surface">
           <h4>Status</h4>
@@ -25,12 +29,19 @@ async function doLogout() { await auth.logout(); navigateTo('/login'); }
         </div>
         <div class="mini card-surface">
           <h4>Mode</h4>
-          <p>{{ auth.passwordlessType || '—' }}</p>
+          <p>{{ meta.label }}</p>
         </div>
         <div class="mini card-surface">
           <h4>Auth Request</h4>
           <p class="mono">{{ auth.authRequestId?.slice(0,16) || '—' }}</p>
         </div>
+      </div>
+      <div class="refs">
+        <h4>References</h4>
+        <ul>
+          <li><a href="https://docs.scalekit.com/passwordless/quickstart/" target="_blank" rel="noopener">Scalekit Passwordless Quickstart</a></li>
+          <li><a href="https://scalekit.com/" target="_blank" rel="noopener">Scalekit Website</a></li>
+        </ul>
       </div>
     </section>
   </div>

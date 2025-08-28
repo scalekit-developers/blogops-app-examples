@@ -1,11 +1,13 @@
 <script setup lang="ts">
-const { isAuthenticated, user, logout } = useAuth();
+// Keep the store object intact so reactivity isn't lost (destructuring would break updates)
+const auth = useAuth();
+function doLogout() { auth.logout(); }
 </script>
 <template>
-  <div class="auth-status" :class="{ on: isAuthenticated }">
-    <template v-if="isAuthenticated">
-      <span class="user">{{ user?.email }}</span>
-      <button class="btn outline mini" @click="logout">Logout</button>
+  <div class="auth-status" :class="{ on: auth.isAuthenticated }">
+    <template v-if="auth.isAuthenticated">
+      <span class="user">{{ auth.user?.email }}</span>
+      <button class="btn outline mini" @click="doLogout">Logout</button>
     </template>
     <template v-else>
       <NuxtLink class="btn outline mini" to="/login">Login</NuxtLink>
