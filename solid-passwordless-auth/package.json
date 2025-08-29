@@ -1,0 +1,20 @@
+{
+  "name": "solid-passwordless-auth",
+  "private": true,
+  "scripts": {
+    "dev": "solid-start dev",
+    "build": "solid-start build",
+    "start": "solid-start start"
+  },
+  "dependencies": {
+    "@scalekit-sdk/node": "latest",
+  "solid-start": "^0.3.11",
+  "solid-start-node": "^0.3.11",
+  "solid-js": "^1.8.17",
+    "undici": "^6.18.0"
+  },
+  "devDependencies": {
+  "typescript": "^5.4.0",
+  "esbuild": "0.18.20"
+  }
+}
