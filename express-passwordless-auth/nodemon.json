@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "js,json",
+  "ignore": ["src/docs/openapi.json"],
+  "exec": "node src/server.js"
+}
