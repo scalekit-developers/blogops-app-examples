@@ -1,0 +1,114 @@
+# Node / Nuxt / Vue standard ignores
+node_modules/
+.npm/
+.pnpm-store/
+yarn.lock
+package-lock.json
+# (Lockfile optional; uncomment one if you want to commit it)
+# pnpm-lock.yaml
+
+# Output / build
+.nuxt/
+.next/
+.output/
+.dist/
+.cache/
+.temp/
+.tmp/
+coverage/
+.vite-cache/
+.histoire/
+storybook-static/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+logs/
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+.junit
+.nyc_output/
+
+# Misc caches
+.eslintcache
+.stylelintcache
+.cache-loader/
+.vuepress/.cache/
+.vuepress/dist/
+**/.DS_Store
+
+# Coverage artifacts
+lcov.info
+
+# Production artifacts
+*.tar
+*.gz
+
+# Local data
+/data/**
+!data/.keep
+
+# Temporary
+*.tmp
+*.temp
+~$*
+
+# Lockfiles (choose one to keep if desired)
+# If you prefer committing lockfiles, remove the pattern for your manager above.
+
+# Images optimization caches
+.imagemin-cache/
+
+# Nuxt dev storage
+.storage/
+
+# Git merge / patch leftovers
+*.orig
+
+# JWT keys / certs (example patterns)
+*.pem
+*.key
+*.crt
+
+# Optional: VSCode local history
+.history/
+
+# Sentry / crash dumps
+*.dmp
+
+# Cypress / Playwright (if added later)
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+blob-report/
+
+# Terraform / infra (future-proof)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Docker
+**/docker-compose.override.yml
