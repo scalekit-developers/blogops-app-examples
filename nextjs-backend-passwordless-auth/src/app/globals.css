@@ -1,0 +1,15 @@
+/* Apply background to the body and html to avoid white edges */
+html, body {
+  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 20%, #0a0a23 0%, #18181b 100%);
+  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Remove all borders and box-shadows from body */
+body {
+  border: none !important;
+  box-shadow: none !important;
+}

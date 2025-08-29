@@ -1,0 +1,87 @@
+# Node / Next.js standard ignores
+node_modules/
+.npm/
+.pnpm-store/
+
+# Production builds
+.next/
+out/
+.next-static/
+.next-cache/
+
+# Typescript build cache
+*.tsbuildinfo
+
+# Env files (never commit secrets)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Coverage / tests
+coverage/
+*.lcov
+
+# Misc
+*.swp
+*.swo
+.tmp/
+.temp/
+.cache/
+
+# Optional lockfiles (keep one if you use it)
+# yarn.lock
+# pnpm-lock.yaml
+
+# Storybook / build artifacts
+storybook-static/
+
+# Local databases / data
+*.sqlite
+*.sqlite-journal
+
+# Debug artifacts
+.dump
+
+# Generated swagger types or client (if added later)
+src/generated/
+
+# Prevent committing JWTs or debug exports
+*.jwt
+
+# Terraform / infra (if added later)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# VS Code test workspaces
+.code-workspace
+
+# Windows
+Ehthumbs.db
+Desktop.ini
+
+# Mac bundle clutter
+*.icloud
+
+# Temporary backups
+*~
+# Lock files created by editors
+*.lock
