@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - redis
+    # volumes:
+    #   - .:/app  # enable for live code reload with nodemon (adjust Dockerfile)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  # db:
+  #   image: postgres:16-alpine
+  #   environment:
+  #     POSTGRES_PASSWORD: example
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+volumes:
+  db-data: {}
