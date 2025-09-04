@@ -1,0 +1,63 @@
+.apiDocsWrapper {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 0;
+}
+
+.apiDocsContainer {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  padding: 32px;
+  overflow: auto;
+}
+
+/* Swagger UI customizations */
+.swagger-ui .opblock {
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.swagger-ui .opblock-summary {
+  border-radius: 10px 10px 0 0;
+  background: #f1f5f9;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.swagger-ui .opblock .opblock-section-header {
+  background: #f1f5f9;
+  border-radius: 0 0 10px 10px;
+}
+.swagger-ui .btn {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  font-weight: 500;
+  padding: 8px 20px !important;
+  transition: background 0.2s;
+}
+.swagger-ui .btn:hover {
+  background: #1d4ed8 !important;
+}
+.swagger-ui input[type="text"],
+.swagger-ui textarea {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 8px;
+  font-size: 1rem;
+  background: #f9fafb;
+}
+.swagger-ui .response {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+}
+.swagger-ui .info {
+  margin-bottom: 32px;
+}

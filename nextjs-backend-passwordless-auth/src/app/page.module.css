@@ -1,0 +1,57 @@
+
+
+
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(ellipse 80% 80% at 50% 20%, #0a0a23 0%, #18181b 100%);
+  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+
+
+
+.center {
+  text-align: center;
+  /* Remove border, add subtle shadow for depth */
+  box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+  background: none;
+}
+
+
+
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1rem;
+  letter-spacing: -0.05em;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+
+
+
+.description {
+  font-size: 1.25rem;
+  color: #b3b8d0;
+  margin-bottom: 0.5rem;
+}
+
+
+
+.link {
+  color: #0070f3;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s;
+  border: none;
+}
+
+.link:hover {
+  color: #fff;
+}
