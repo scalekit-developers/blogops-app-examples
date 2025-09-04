@@ -2,6 +2,8 @@
 
 Minimal SolidStart demo: passwordless email auth (OTP + Magic Link) using Scalekit. Focus: clarity, few files, quick start.
 
+![Dashboard](/public/dashboard.png)
+
 ## Quick Start
 
 1. Install deps:
@@ -33,10 +35,12 @@ npm run dev
 ## How It Works
 
 1. User enters email (store `authRequestId`).
+![Sign In](/public/sign-in.png)
 2. Email delivers OTP + magic link.
-3. User enters code or clicks link -> `/api/auth/verify` sets session cookie.
-4. Dashboard loads (server guard + client context).
-5. Optional resend uses same `authRequestId`.
+![Verify](/public/verify.png)
+1. User enters code or clicks link -> `/api/auth/verify` sets session cookie.
+2. Dashboard loads (server guard + client context).
+3. Optional resend uses same `authRequestId`.
 
 ## Key Files (skim these first)
 
@@ -62,11 +66,3 @@ Accessibility: aria-live Alerts, minimal focus friction.
 - Persistent rate limiting (Redis) instead of in-memory
 - Secure cookie with HTTPS (auto when NODE_ENV=production)
 - User persistence (DB) and audit logging
-
-## Next Ideas
-
-- ETag / conditional GET for `/api/auth/me`
-- Tests (integration for send/verify)
-- Role / scopes example
-
-Enjoy & adapt. Keep it small.
