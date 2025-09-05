@@ -1,0 +1,1 @@
+import '@solidjs/start/server';
