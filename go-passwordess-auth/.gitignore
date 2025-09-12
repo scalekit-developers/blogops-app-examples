@@ -1,0 +1,46 @@
+# Go binaries and build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build output
+bin/
+build/
+dist/
+tmp/
+*.prof
+*.pprof
+coverage.out
+
+# Go workspace files (local-only)
+go.work
+go.work.sum
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Air (live reload) temp files
+.air/
+air.log
+.tmp/
