@@ -1,4 +1,4 @@
-// Very small in-memory rate limiter (demo only). Reset on server restart.
+ // Very small in-memory rate limiter (demo only). Reset on server restart.
 // Key: ip+route -> timestamps array
 const hits = new Map<string, number[]>();
 

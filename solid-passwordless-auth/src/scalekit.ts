@@ -15,7 +15,7 @@ export function getScalekit() {
       });
       throw new Error('Missing Scalekit env vars');
     }
-    console.log('[SCALEKIT] init envUrl=%s id=%s', envUrl, id.substring(0, 6) + '…');
+    console.log(`[SCALEKIT] init ${envUrl} id=${id.substring(0, 6)} ...`);
     client = new Scalekit(envUrl, id, secret);
   }
   return client;
