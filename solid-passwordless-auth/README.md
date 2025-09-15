@@ -85,3 +85,5 @@ This project uses a simple in-memory rate limiter to prevent abuse and brute-for
 - Not suitable for multi-server or distributed environments (no shared state).
 - Data is lost if the server restarts.
 - For production or scalable systems, use a distributed store (e.g., Redis) for rate limiting.
+
+For a deeper dive into passwordless authentication with SolidJS, see the Scalekit blog: [Passwordless Authentication in SolidJS](https://www.scalekit.com/blog/passwordless-authentication-solid-js)
