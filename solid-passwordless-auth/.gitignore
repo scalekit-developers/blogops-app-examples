@@ -1,0 +1,32 @@
+# Node / Package
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Builds / Output
+.dist/
+dist/
+.build/
+build/
+.temp/
+.tmp/
+.cache/
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/*
+
+# SolidStart SSR artifacts (if generated)
+.server/
+
+# Lock backup
+package-lock.json.*
