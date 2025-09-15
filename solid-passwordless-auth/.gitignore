@@ -14,8 +14,6 @@ build/
 .temp/
 .tmp/
 .cache/
-.vite/
-.vercel/
 
 # Environment / Secrets
 .env
@@ -24,21 +22,8 @@ build/
 
 # OS / Editor
 .DS_Store
-Thumbs.db
 .idea/
 .vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-
-# Coverage / Tests
-coverage/
-*.lcov
-
-# Misc
-*.swp
-*.swo
-*.tsbuildinfo
-*.local
 
 # SolidStart SSR artifacts (if generated)
 .server/
