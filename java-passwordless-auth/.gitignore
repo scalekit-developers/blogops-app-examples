@@ -1,0 +1,22 @@
+# Maven output
+/target/
+
+# IDE files
+/.idea/
+*.iml
+*.ipr
+*.iws
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application secrets
+**/application.properties
+
+# Logs
+*.log
+
+# Misc
+*.swp
