@@ -9,14 +9,16 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
 Optional (Windows PowerShell):
+
 ```powershell
 python -m venv .venv
 .\\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-1. Create .env from the example and fill the required values
+2. Create .env from the example and fill the required values
 
 ```env
 # Required
@@ -34,7 +36,7 @@ POLL_INTERVAL_SECONDS=30
 POLL_LOOKBACK_SECONDS=86400
 ```
 
-1. Map your Slack user to a Scalekit identifier (copy the example first)
+3. Map your Slack user to a Scalekit identifier (copy the example first)
 
 ```bash
 cp user_mapping.example.json user_mapping.json
@@ -51,13 +53,13 @@ Then edit `user_mapping.json`:
 }
 ```
 
-1. Start the agent
+4. Start the agent
 
 ```bash
 python main_polling.py
 ```
 
-1. Authorize Slack and GitHub (replace with your Slack user ID)
+5. Authorize Slack and GitHub (replace with your Slack user ID)
 
 ```text
 http://localhost:5000/auth/init?user_id=YOUR_SLACK_USER_ID&service=slack
