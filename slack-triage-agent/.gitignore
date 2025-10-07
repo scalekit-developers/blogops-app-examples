@@ -1,0 +1,30 @@
+## gitignore for Slack Triage Agent (Python)
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment (we use .venv in README)
+.venv/
+
+# Environment files (keep .env.example tracked)
+.env
+.env.local
+
+# Editor settings
+.vscode/
+
+# Test/coverage outputs (optional but common)
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local user mappings (may contain personal emails)
+user_mapping.json
