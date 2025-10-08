@@ -104,7 +104,7 @@ def fetch_channel_messages(channel_id: str, identifier: str, limit: int = 10) ->
             print(f"   📅 Looking for messages since: {readable_time} (ts: {oldest_time})")
         else:
             # First poll - use lookback period to catch recent messages
-            lookback_seconds = Settings.POLL_LOOKBACK_SECONDS
+            lookback_seconds = Settings.RESYNC_LOOKBACK_SECONDS if Settings.RESYNC_ON_START else Settings.POLL_LOOKBACK_SECONDS
             oldest_time = time.time() - lookback_seconds
             from datetime import datetime
             readable_time = datetime.fromtimestamp(oldest_time).strftime('%Y-%m-%d %H:%M:%S')
@@ -134,11 +134,29 @@ def fetch_channel_messages(channel_id: str, identifier: str, limit: int = 10) ->
 
         print(f"✅ Fetched {len(messages)} messages from {channel_id}")
 
-        # Update last poll time to current time for next poll
-        # This ensures we only fetch new messages next time
-        last_poll_time[channel_id] = time.time()
+        # Update last poll boundary for the next fetch.
+        # If we received messages, move the boundary to the newest message ts (minus a small overlap)
+        # to avoid missing messages that arrive at the boundary. Dedupe prevents double-processing.
+        if messages:
+            try:
+                max_ts = max(float(m.get('ts')) for m in messages if m.get('ts'))
+                # Use configured overlap to be safe against rounding and ordering
+                last_poll_time[channel_id] = max_ts - float(Settings.POLL_OVERLAP_SECONDS)
+                from datetime import datetime
+                readable_next = datetime.fromtimestamp(last_poll_time[channel_id]).strftime('%Y-%m-%d %H:%M:%S')
+                print(f"   ⏭️  Next poll oldest set to: {readable_next} (ts: {last_poll_time[channel_id]:.6f})")
+            except Exception:
+                # Fallback to current time if parsing failed
+                last_poll_time[channel_id] = time.time()
+        else:
+            # No messages returned: advance boundary to now
+            last_poll_time[channel_id] = time.time()
 
         return messages
+
+        # NOTE: Fallback retry without 'oldest' is intentionally not inside this
+        # function to keep it single-responsibility. We handle empty-first-poll
+        # fallback in the polling loop on first encounter.
 
     except Exception as e:
         print(f"❌ Error fetching messages from {channel_id}: {e}")
@@ -441,7 +459,47 @@ def poll_channels(user_mappings: Dict):
                     continue
 
                 # Fetch messages
+                first_fetch = channel_id not in last_poll_time
                 messages = fetch_channel_messages(channel_id, identifier)
+
+                # One-time fallback: If first fetch returns 0 messages and a larger
+                # fallback window is configured, attempt a single wider fetch to
+                # avoid missing recent history due to too-small lookback.
+                if first_fetch and not messages and Settings.POLL_EMPTY_FALLBACK_SECONDS > Settings.POLL_LOOKBACK_SECONDS:
+                    try:
+                        lookback_seconds = Settings.POLL_EMPTY_FALLBACK_SECONDS
+                        oldest_time = time.time() - lookback_seconds
+                        from datetime import datetime
+                        readable_time = datetime.fromtimestamp(oldest_time).strftime('%Y-%m-%d %H:%M:%S')
+                        print(f"   ↻ First poll empty; retrying with wider lookback {lookback_seconds}s to: {readable_time}")
+
+                        result = connector.execute_action_with_retry(
+                            identifier=identifier,
+                            tool='slack_fetch_conversation_history',
+                            parameters={
+                                'channel': channel_id,
+                                'limit': 10,
+                                'oldest': str(oldest_time)
+                            }
+                        )
+                        alt_messages = []
+                        if result:
+                            if hasattr(result, 'data') and isinstance(result.data, dict):
+                                alt_messages = result.data.get('messages', [])
+                            elif isinstance(result, dict):
+                                alt_messages = result.get('messages', [])
+                        print(f"   ↻ Fallback fetched {len(alt_messages)} messages")
+                        # Use whichever list is non-empty (prefer fallback if it found any)
+                        if alt_messages:
+                            messages = alt_messages
+                            # Set boundary based on newest message like fetch_channel_messages
+                            try:
+                                max_ts = max(float(m.get('ts')) for m in messages if m.get('ts'))
+                                last_poll_time[channel_id] = max_ts - float(Settings.POLL_OVERLAP_SECONDS)
+                            except Exception:
+                                last_poll_time[channel_id] = time.time()
+                    except Exception as e:
+                        print(f"   ⚠️ Fallback fetch error: {e}")
 
                 # Process each message
                 for message in reversed(messages):  # Process oldest first

@@ -135,6 +135,19 @@ class Settings:
     # Default: 24 hours (86400 seconds) to catch messages from today
     POLL_LOOKBACK_SECONDS: int = int(os.getenv("POLL_LOOKBACK_SECONDS", "86400"))
 
+    # Small overlap to prevent boundary misses when advancing the poll window
+    POLL_OVERLAP_SECONDS: float = float(os.getenv("POLL_OVERLAP_SECONDS", "1"))
+
+    # If the first poll returns no messages and this fallback window is larger
+    # than POLL_LOOKBACK_SECONDS, perform a one-time fallback fetch without
+    # changing configuration. Helps when lookback is set too small.
+    POLL_EMPTY_FALLBACK_SECONDS: int = int(os.getenv("POLL_EMPTY_FALLBACK_SECONDS", "900"))
+
+    # Optional: On startup, widen the initial lookback window to this value.
+    # Useful after downtime or when you want to ensure backfill.
+    RESYNC_ON_START: bool = os.getenv("RESYNC_ON_START", "false").lower() in ("1", "true", "yes")
+    RESYNC_LOOKBACK_SECONDS: int = int(os.getenv("RESYNC_LOOKBACK_SECONDS", "3600"))
+
     # ============================================================================
     # USER MAPPING FILE
     # ============================================================================
