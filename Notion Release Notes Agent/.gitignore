@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Environment & Secrets
+.env
+user_mapping.json
+
+# State (optional - keep or remove based on preference)
+# polling_state.json
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
