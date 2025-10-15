@@ -1,0 +1,8 @@
+flask>=2.3.0
+python-dotenv>=1.0.0
+scalekit-sdk-python>=1.0.0
+requests>=2.31.0
+pydantic>=2.7.0
+python-dateutil>=2.9.0
+pytz>=2024.1
+dateparser>=1.2.0
