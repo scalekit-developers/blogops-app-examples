@@ -16,7 +16,7 @@ Optional (Windows PowerShell):
 
 ```powershell
 python -m venv .venv
-.\\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
@@ -120,4 +120,4 @@ ZENDESK_KEYWORDS = ["support", "help", "zendesk:", "ticket:", "customer", "billi
 **Learn more:**
 
 - [Scalekit Blog for this project](https://www.scalekit.com/blog)
- - [Agent Actions Quickstart Docs](https://docs.scalekit.com/agent-actions/quickstart/)
+- [Agent Actions Quickstart Docs](https://docs.scalekit.com/agent-actions/quickstart/)

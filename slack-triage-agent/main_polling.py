@@ -345,13 +345,31 @@ def execute_github_action(
         }
     )
 
-    if result.get('success'):
-        issue_number = result.get('result', {}).get('number')
-        issue_url = result.get('result', {}).get('html_url')
 
+    if not result:
+        print("❌ Failed to create GitHub issue: no result returned")
+        send_slack_message(
+            channel_id=channel_id,
+            identifier=identifier,
+            text="❌ Failed to create GitHub issue: empty result",
+            thread_ts=thread_ts
+        )
+        return {"success": False, "error": "empty result"}
+
+    # Handle common shapes: raw GitHub issue dict or nested variants
+    issue_number = (
+        result.get("number")
+        or result.get("issue", {}).get("number")
+        or result.get("data", {}).get("number")
+    )
+    issue_url = (
+        result.get("html_url")
+        or result.get("issue", {}).get("html_url")
+        or result.get("data", {}).get("html_url")
+    )
+
+    if issue_number and issue_url:
         print(f"✅ GitHub issue #{issue_number} created")
-
-        # Post confirmation back to Slack
         send_slack_message(
             channel_id=channel_id,
             identifier=identifier,
@@ -359,14 +377,13 @@ def execute_github_action(
             thread_ts=thread_ts
         )
     else:
-        print(f"❌ Failed to create GitHub issue: {result.get('error')}")
+        print(f"❌ Failed to create GitHub issue: unexpected result shape {list(result.keys())}")
         send_slack_message(
             channel_id=channel_id,
             identifier=identifier,
-            text=f"❌ Failed to create GitHub issue: {result.get('error')}",
+            text="❌ Failed to create GitHub issue: unexpected result shape",
             thread_ts=thread_ts
         )
-
     return result
 
 
@@ -498,7 +515,7 @@ def poll_channels(user_mappings: Dict):
                                 max_ts = max(float(m.get('ts')) for m in messages if m.get('ts'))
                                 last_poll_time[channel_id] = max_ts - float(Settings.POLL_OVERLAP_SECONDS)
                             except Exception:
-                                last_poll_time[channel_id] = time.time()
+                                last_poll_time[channel_id] = time.time() - float(Settings.POLL_OVERLAP_SECONDS)
                     except Exception as e:
                         print(f"   ⚠️ Fallback fetch error: {e}")
 
