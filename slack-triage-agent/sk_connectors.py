@@ -282,23 +282,11 @@ class ScalekitConnector:
     def get_authorization_url(self, service: str, user_identifier: str, redirect_uri: str = None) -> str:
         """
         Generate OAuth authorization URL for a service using Scalekit SDK.
-
-        Users need to visit this URL to authorize the connection.
-        After authorization, they'll be redirected based on Scalekit dashboard configuration.
-
-        Args:
-            service: Service name ("github", "zendesk", "slack")
-            user_identifier: User's Scalekit identifier
-            redirect_uri: (Optional) Not used - redirect configured in Scalekit dashboard
-
-        Returns:
-            Authorization URL (magic link) for the user to visit
+        Tries to find the connector name for the service, even if the user has no connected accounts yet.
         """
         try:
-            # First, find the connector name for this service
-            # Scalekit uses connector names like "github-2", "slack", etc.
             connector_name = None
-
+            # Try to get connector name from existing connections
             try:
                 connections_response = self.client.actions.list_connected_accounts(identifier=user_identifier)
                 if hasattr(connections_response, 'connected_accounts'):
@@ -309,26 +297,32 @@ class ScalekitConnector:
                             print(f"📌 Found connector name for {service}: {connector_name}")
                             break
             except Exception as e:
-                print(f"⚠️  Could not get connector name: {e}")
+                print(f"⚠️  Could not get connector name from connected accounts: {e}")
+
+            # If not found, try to derive connector name from config or catalog
+            if not connector_name:
+                # Try to use a default mapping from Settings or a static map
+                default_connectors = {
+                    'slack': 'slack',
+                    'github': 'github',
+                }
+                connector_name = default_connectors.get(service.lower())
+                print(f"ℹ️  Using default connector name for {service}: {connector_name}")
+                # Optionally: TODO - fetch connector catalog from Scalekit if available
 
             if not connector_name:
                 raise Exception(f"No connector found for service {service}. Please create the connection in Scalekit dashboard first.")
 
-            # Use Scalekit SDK's magic link method
-            # Note: redirect_uri must be configured in Scalekit dashboard, not passed here
             link_response = self.client.actions.connected_accounts.get_magic_link_for_connected_account(
                 connector=connector_name,
                 identifier=user_identifier
             )
 
-            # Extract the magic link from response
-            # Response is a tuple: (response_object, metadata)
             if isinstance(link_response, tuple):
                 link_data, _ = link_response
             else:
                 link_data = link_response
 
-            # Get the link from the response object
             if hasattr(link_data, 'link'):
                 auth_url = link_data.link
             elif hasattr(link_data, 'magic_link'):

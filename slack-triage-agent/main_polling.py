@@ -147,10 +147,11 @@ def fetch_channel_messages(channel_id: str, identifier: str, limit: int = 10) ->
                 print(f"   ⏭️  Next poll oldest set to: {readable_next} (ts: {last_poll_time[channel_id]:.6f})")
             except Exception:
                 # Fallback to current time if parsing failed
-                last_poll_time[channel_id] = time.time()
+                last_poll_time[channel_id] = time.time() - float(Settings.POLL_OVERLAP_SECONDS)
         else:
-            # No messages returned: advance boundary to now
-            last_poll_time[channel_id] = time.time()
+            # No messages returned: keep a small overlap to avoid racing with new arrivals
+            boundary = time.time() - float(Settings.POLL_OVERLAP_SECONDS)
+            last_poll_time[channel_id] = max(0.0, boundary)
 
         return messages
 
