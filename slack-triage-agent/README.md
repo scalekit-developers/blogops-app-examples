@@ -1,5 +1,7 @@
 # Slack Triage Agent (Scalekit + LangGraph)
 
+![Slack Triage Agent](assets/Slack%20Triage%20Agent.png)
+
 ## Get Started (5 steps)
 
 1. Create a virtual environment and install deps
@@ -114,3 +116,8 @@ ZENDESK_KEYWORDS = ["support", "help", "zendesk:", "ticket:", "customer", "billi
 - No messages fetched → authorize Slack using the URL above
 - GitHub issue fails → check repo owner/name and GitHub authorization
 - "User not mapped" → add your Slack user to `user_mapping.json`
+
+**Learn more:**
+
+- [Scalekit Blog for this project](https://www.scalekit.com/blog)
+ - [Agent Actions Quickstart Docs](https://docs.scalekit.com/agent-actions/quickstart/)
