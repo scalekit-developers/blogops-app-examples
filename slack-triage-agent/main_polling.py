@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Set
 
 from flask import Flask, jsonify
+from markupsafe import escape
 
 from routing import get_router
 from settings import Settings
@@ -591,6 +592,7 @@ def auth_init():
         service: Service to connect (slack, github, zendesk)
     """
     from flask import request
+    from markupsafe import escape
 
     user_id = request.args.get('user_id')
     service = request.args.get('service')
@@ -644,8 +646,8 @@ def auth_callback():
         <html>
             <body style="font-family: Arial, sans-serif; padding: 50px; text-align: center;">
                 <h1 style="color: #d32f2f;">❌ Authorization Failed</h1>
-                <p><strong>Error:</strong> {error}</p>
-                <p><strong>Description:</strong> {error_description}</p>
+                <p><strong>Error:</strong> {escape(error)}</p>
+                <p><strong>Description:</strong> {escape(error_description)}</p>
                 <p><a href="/">Go back</a></p>
             </body>
         </html>
@@ -672,7 +674,7 @@ def list_users():
     user_mappings = load_user_mappings()
     return jsonify({
         'count': len(user_mappings),
-        'users': user_mappings
+        'users': list(user_mappings.keys())
     }), 200
 
 
