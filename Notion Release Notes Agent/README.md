@@ -2,6 +2,8 @@
 
 Automatically creates Notion pages with release notes when you merge PRs on GitHub.
 
+![GitHub Merges](/assets/github-merged.png)
+
 ## How It Works
 
 1. You merge a PR on GitHub
@@ -51,6 +53,8 @@ Connect your Slack workspace to Scalekit:
 ### Step 3: Notion Database Setup
 
 Create a Notion database with the required structure:
+
+![notion database](/assets/notion-database.png)
 
 1. Open Notion and create a new **Database** (Table view)
 2. Add these properties (exact names matter):
@@ -156,6 +160,8 @@ python polling_server.py
 
 ## Testing
 
+![Slack Notification](/assets/slack-notification.png)
+
 Test without merging a real PR:
 
 ```bash
@@ -163,6 +169,8 @@ python test_any_pr.py
 ```
 
 Enter PR details when prompted. Creates a real Notion page and sends Slack notification.
+
+![Notion doc](/assets/notion-doc.png)
 
 ---
 
