@@ -108,7 +108,8 @@ class PollingAgent:
 
             # Filter for merged PRs in last 24 hours
             merged_prs = []
-            now = datetime.utcnow()
+            from datetime import timezone
+            now = datetime.now(timezone.utc)
             cutoff = now - timedelta(hours=24)
 
             for pr in all_prs:
@@ -117,9 +118,10 @@ class PollingAgent:
                     # Parse merge time
                     merged_at_str = pr.get("merged_at")
                     try:
+                        # GitHub returns UTC times with 'Z' suffix
                         merged_at = datetime.fromisoformat(merged_at_str.replace("Z", "+00:00"))
                         # Only include PRs merged in last 24 hours
-                        if merged_at.replace(tzinfo=None) >= cutoff:
+                        if merged_at >= cutoff:
                             merged_prs.append(pr)
                     except Exception as e:
                         logger.warning(f"⚠️ Could not parse merge time for PR #{pr.get('number')}: {e}")
@@ -288,8 +290,8 @@ class PollingAgent:
         logger.info("🚀 Starting GitHub Polling Agent")
         logger.info(f"📍 Repository: {Settings.GITHUB_REPO_OWNER}/{Settings.GITHUB_REPO_NAME}")
         logger.info(f"⏱️  Poll interval: {self.interval} seconds")
-    db_id_display = (Settings.NOTION_DATABASE_ID[:20] + "...") if Settings.NOTION_DATABASE_ID else "not configured"
-    logger.info(f"📄 Notion DB: {db_id_display}")
+        db_id_display = (Settings.NOTION_DATABASE_ID[:20] + "...") if Settings.NOTION_DATABASE_ID else "not configured"
+        logger.info(f"📄 Notion DB: {db_id_display}")
         logger.info(f"💬 Slack channel: {Settings.SLACK_ANNOUNCE_CHANNEL}")
         logger.info("=" * 60)
 
