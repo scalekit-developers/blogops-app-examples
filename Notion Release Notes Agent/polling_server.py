@@ -288,7 +288,8 @@ class PollingAgent:
         logger.info("🚀 Starting GitHub Polling Agent")
         logger.info(f"📍 Repository: {Settings.GITHUB_REPO_OWNER}/{Settings.GITHUB_REPO_NAME}")
         logger.info(f"⏱️  Poll interval: {self.interval} seconds")
-        logger.info(f"📄 Notion DB: {Settings.NOTION_DATABASE_ID[:20]}...")
+    db_id_display = (Settings.NOTION_DATABASE_ID[:20] + "...") if Settings.NOTION_DATABASE_ID else "not configured"
+    logger.info(f"📄 Notion DB: {db_id_display}")
         logger.info(f"💬 Slack channel: {Settings.SLACK_ANNOUNCE_CHANNEL}")
         logger.info("=" * 60)
 
