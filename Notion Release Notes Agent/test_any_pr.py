@@ -98,7 +98,7 @@ def send_webhook(pr_number, pr_title, pr_body):
 
     # Generate GitHub signature
     payload_bytes = json.dumps(payload).encode('utf-8')
-    secret = os.getenv('GITHUB_WEBHOOK_SECRET', '').encode('utf-8')
+    secret = (Settings.GITHUB_WEBHOOK_SECRET or '').encode('utf-8')
 
     if secret:
         signature = 'sha256=' + hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()
@@ -123,7 +123,7 @@ def send_webhook(pr_number, pr_title, pr_body):
             print("✅ SUCCESS!")
             print()
             print(f"📄 Notion Page: {result.get('notion_url', 'N/A')}")
-            chan = os.getenv("SLACK_ANNOUNCE_CHANNEL", "N/A")
+            chan = Settings.SLACK_ANNOUNCE_CHANNEL or "N/A"
             print(f"💬 Slack: Notification sent to {chan}")
             print()
             print("=" * 60)

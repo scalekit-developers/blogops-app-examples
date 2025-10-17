@@ -321,17 +321,12 @@ def main():
 
     args = parser.parse_args()
 
-    # Validate configuration
-    if not Settings.GITHUB_REPO_OWNER or not Settings.GITHUB_REPO_NAME:
-        logger.error("❌ GITHUB_REPO_OWNER and GITHUB_REPO_NAME must be configured in .env")
-        sys.exit(1)
 
-    if not Settings.NOTION_DATABASE_ID:
-        logger.error("❌ NOTION_DATABASE_ID must be configured in .env")
-        sys.exit(1)
-
-    if not Settings.SCALEKIT_DEFAULT_IDENTIFIER:
-        logger.error("❌ SCALEKIT_DEFAULT_IDENTIFIER must be configured in .env")
+    # Validate configuration (fail fast)
+    try:
+        Settings.validate()
+    except ValueError as e:
+        logger.error("❌ %s", e)
         sys.exit(1)
 
     # Create and run agent
