@@ -16,6 +16,8 @@ import sys
 import requests
 from dotenv import load_dotenv
 
+from settings import Settings
+
 # Load environment variables
 load_dotenv()
 
@@ -47,8 +49,13 @@ def get_pr_details():
     return pr_number, pr_title, pr_body
 
 
+
 def send_webhook(pr_number, pr_title, pr_body):
     """Send simulated webhook to local server"""
+
+    owner = Settings.GITHUB_REPO_OWNER or "your-owner"
+    repo_name = Settings.GITHUB_REPO_NAME or "your-repo"
+    server_base = f"http://localhost:{Settings.FLASK_PORT}"
 
     payload = {
         "action": "closed",
@@ -60,9 +67,9 @@ def send_webhook(pr_number, pr_title, pr_body):
             "state": "closed",
             "merged": True,
             "merge_commit_sha": f"simulated_{pr_number}_{hash(pr_title) % 100000}",
-            "html_url": f"https://github.com/Sid-Lais/lens-view-05/pull/{pr_number}",
+            "html_url": f"https://github.com/{owner}/{repo_name}/pull/{pr_number}",
             "user": {
-                "login": "Sid-Lais"
+                "login": owner
             },
             "head": {
                 "ref": f"feature/pr-{pr_number}",
@@ -74,19 +81,18 @@ def send_webhook(pr_number, pr_title, pr_body):
             }
         },
         "repository": {
-            "name": "lens-view-05",
-            "full_name": "Sid-Lais/lens-view-05",
+            "name": repo_name,
+            "full_name": f"{owner}/{repo_name}",
             "owner": {
-                "login": "Sid-Lais"
+                "login": owner
             }
         }
     }
 
-    print()
     print("=" * 60)
     print(f"📡 Sending webhook for PR #{pr_number}...")
     print(f"📝 Title: {pr_title}")
-    print(f"🔗 URL: https://github.com/Sid-Lais/lens-view-05/pull/{pr_number}")
+    print(f"🔗 URL: https://github.com/{owner}/{repo_name}/pull/{pr_number}")
     print("=" * 60)
     print()
 
@@ -96,41 +102,34 @@ def send_webhook(pr_number, pr_title, pr_body):
 
     if secret:
         signature = 'sha256=' + hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()
-        print(f"🔐 Using signature from GITHUB_WEBHOOK_SECRET")
+        print("🔐 Using signature from GITHUB_WEBHOOK_SECRET")
     else:
         signature = ''
-        print(f"⚠️  No GITHUB_WEBHOOK_SECRET found in .env")
+        print("⚠️  No GITHUB_WEBHOOK_SECRET found in .env")
 
     try:
         response = requests.post(
-            "http://localhost:3000/webhook/github",
+            f"{server_base}/webhook/github",
             data=payload_bytes,  # Send as bytes, not json=payload
-            headers={
+            headers=(lambda h: (h.update({"X-Hub-Signature-256": signature}) or h) if signature else h)({
                 "X-GitHub-Event": "pull_request",
                 "Content-Type": "application/json",
-                "X-Hub-Signature-256": signature,
-            },
+            }),
             timeout=30
         )
-
-        print(f"Status: {response.status_code}")
-        print()
 
         if response.status_code == 200:
             result = response.json()
             print("✅ SUCCESS!")
             print()
             print(f"📄 Notion Page: {result.get('notion_url', 'N/A')}")
-            print(f"💬 Slack: Notification sent to C09JTJWN0R3")
+            chan = os.getenv("SLACK_ANNOUNCE_CHANNEL", "N/A")
+            print(f"💬 Slack: Notification sent to {chan}")
             print()
             print("=" * 60)
             print("🎉 Release notes created successfully!")
             print("=" * 60)
             print()
-            print("Next steps:")
-            print("1. Check Notion: https://www.notion.so/28b6b4d2baae80aa931ccbf7ccd2efa5")
-            print("2. Check Slack channel")
-            print("3. Verify the page has your PR details")
             return True
         else:
             print(f"❌ Error Response: {response.text}")
@@ -143,7 +142,7 @@ def send_webhook(pr_number, pr_title, pr_body):
         print("  .venv\\Scripts\\python.exe webhook_server.py")
         print()
         return False
-    except Exception as e:
+    except requests.RequestException as e:
         print(f"❌ ERROR: {e}")
         return False
 
@@ -151,11 +150,12 @@ def send_webhook(pr_number, pr_title, pr_body):
 def main():
     """Main function"""
     # Check if server is running
+
     try:
-        response = requests.get("http://localhost:3000/health", timeout=2)
+        response = requests.get(f"http://localhost:{Settings.FLASK_PORT}/health", timeout=2)
         if response.status_code != 200:
             print("⚠️  Server is running but /health check failed")
-    except:
+    except Exception:
         print()
         print("❌ Webhook server is NOT running!")
         print()

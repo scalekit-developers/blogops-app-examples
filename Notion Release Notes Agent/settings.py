@@ -114,7 +114,7 @@ class Settings:
     # ============================================================================
 
     FLASK_ENV: str = os.getenv("FLASK_ENV", "development")
-    FLASK_PORT: int = int(os.getenv("FLASK_PORT", "5000"))
+    FLASK_PORT: int = int(os.getenv("FLASK_PORT", "3000"))
     FLASK_HOST: str = os.getenv("FLASK_HOST", "0.0.0.0")
 
     # Enable debug mode (should be False in production)

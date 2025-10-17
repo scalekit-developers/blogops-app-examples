@@ -197,8 +197,12 @@ class PollingAgent:
             logger.error(f"❌ Error processing PR #{pr_number}: {e}", exc_info=True)
             return False
 
+
     def _post_slack_notification(self, pr_context: Dict[str, Any], notion_url: str):
         """Post Slack notification about new Notion page"""
+        if not Settings.SLACK_ANNOUNCE_CHANNEL:
+            logger.info("SLACK_ANNOUNCE_CHANNEL not set; skipping Slack notification")
+            return
         try:
             # Load user mapping
             user_mapping_file = Path(Settings.USER_MAPPING_FILE)
