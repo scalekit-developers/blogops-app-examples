@@ -108,7 +108,6 @@ class PollingAgent:
 
             # Filter for merged PRs in last 24 hours
             merged_prs = []
-            from datetime import timezone
             now = datetime.now(timezone.utc)
             cutoff = now - timedelta(hours=24)
 
