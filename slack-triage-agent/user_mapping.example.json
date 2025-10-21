@@ -1,0 +1,9 @@
+{
+  "_instructions": "Copy this file to user_mapping.json and replace placeholder values. Keys must be Slack user IDs (e.g., U01234567).",
+  "_what_is_slack_user_id": "Slack Member ID for a user, used as the key. Find it in Slack: Profile → More (⋯) → Copy member ID.",
+  "U01234567": {
+    "scalekit_identifier": "you@company.com",
+    "github_username": "your-github",
+    "notes": "Optional"
+  }
+}
