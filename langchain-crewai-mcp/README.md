@@ -69,10 +69,10 @@ Continue config (Command Palette → "Continue: Open Config")
 {
   "mcpServers": {
     "mcp-task-server": {
-      "command": "/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp/.venv/bin/python",
-      "args": ["/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp/create_task_mcp_server.py"],
+      "command": "${PROJECT_DIR}/.venv/bin/python",
+      "args": ["${PROJECT_DIR}/create_task_mcp_server.py"],
       "env": { "LOG_LEVEL": "INFO" },
-      "workingDirectory": "/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp"
+      "workingDirectory": "${PROJECT_DIR}"
     }
   }
 }
@@ -95,9 +95,9 @@ Cline (alternative MCP extension) — settings.json example
 "cline.mcpServers": [
   {
     "name": "mcp-task-server",
-    "command": "/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp/.venv/bin/python",
-    "args": ["/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp/create_task_mcp_server.py"],
-    "cwd": "/Users/parvmittal/blogops-app-examples/langchain-crewai-mcp",
+    "command": "${PROJECT_DIR}/.venv/bin/python",
+    "args": ["${PROJECT_DIR}/create_task_mcp_server.py"],
+    "cwd": "${PROJECT_DIR}",
     "env": { "LOG_LEVEL": "INFO" }
   }
 ]
@@ -108,7 +108,7 @@ Troubleshooting 401 (Unauthorized)
 - Prefer `.env` so the server reads secrets directly; avoid `${env:...}` in client configs (not expanded by all clients).
 - Verify `GITHUB_REPO` is set to `owner/repo`.
 
- 
+
 
 Security
 - NEVER commit your token. Add `.env` to `.gitignore` and rotate any exposed PAT.
