@@ -1,0 +1,4 @@
+
+python-dotenv>=1.0.0
+pydantic>=2.7.0
+scalekit-sdk-python>=1.0.0
