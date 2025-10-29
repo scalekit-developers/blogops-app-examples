@@ -82,13 +82,13 @@ def process_invitation(connector, identifier, msg):
     time_min = iso(now)
     time_max = iso(now + timedelta(days=30))
     events_resp = list_events(identifier, cal_id, time_min, time_max) or {}
-    events = events_resp.get('events', [])
+    events = events_resp.get('events', []) if isinstance(events_resp, dict) else events_resp
     
+    # If no events, treat as no busy blocks
     if not events:
-        print("No events found in the calendar.")
-        return
-
-    busy = derive_busy(events, LOCAL_TZ)
+        busy = []
+    else:
+        busy = derive_busy(events, LOCAL_TZ)
     print("busy slots generated:", busy)
     
     # Propose event times
@@ -103,15 +103,40 @@ def process_invitation(connector, identifier, msg):
             break
     
     if not conflict:
-        print(f"No conflict for {subject}; skipping scheduling.")
-        return  # If no conflict, skip creating the event
-    
-    # If conflict exists, find available time slots
+        # No conflict: create the event at the proposed time
+        print(f"No conflict for {subject}; creating event at proposed time.")
+        payload = {
+            "calendarId": cal_id,
+            "summary": ent.title,
+            "description": f"Scheduled from email (message_id={msg_id}).",
+            "start": {"dateTime": iso(proposed_start), "timeZone": USER_TZ},
+            "end": {"dateTime": iso(proposed_end), "timeZone": USER_TZ},
+            "attendees": [a.model_dump() for a in ent.attendees],
+            "conferenceData": {"createRequest": {"requestId": f"req-{int(now.timestamp())}"}},
+            "sendUpdates": "all"
+        }
+        resp = create_event(identifier, cal_id, payload)
+        if "error" in resp:
+            print("Failed to create event:", resp["error"])
+        else:
+            print("Event created at proposed time.")
+            processed_event_ids.add(msg_id)
+        return
+
+    # Conflict exists: find available time slots
+    print(f"Conflict for {subject}; proposing alternatives.")
+    # Respect original meeting duration if available
+    resched_duration_min = ent.duration_minutes
+    try:
+        if ent.hard_start and ent.hard_end:
+            resched_duration_min = max(1, int((ent.hard_end - ent.hard_start).total_seconds() // 60))
+    except Exception:
+        pass
     free_slots = suggest_slots(
         busy=busy, now_local=now, 
         work_start=hm_to_time(WORK_START_LOCAL),
         work_end=hm_to_time(WORK_END_LOCAL),
-        duration_min=ent.duration_minutes,
+        duration_min=resched_duration_min,
         buffer_min=BUFFER_MIN,
         days_ahead=7, limit=3
     )
@@ -127,10 +152,10 @@ def process_invitation(connector, identifier, msg):
     payload = {
         "calendarId": cal_id,
         "summary": ent.title,
-        "description": f"Scheduled from email (message_id={msg_id}).",
+        "description": f"Rescheduled from email (message_id={msg_id}).",
         "start": {"dateTime": iso(chosen_slot[0]), "timeZone": USER_TZ},
         "end": {"dateTime": iso(chosen_slot[1]), "timeZone": USER_TZ},
-        "attendees": [a.dict() for a in ent.attendees],
+        "attendees": [a.model_dump() for a in ent.attendees],
         "conferenceData": {"createRequest": {"requestId": f"req-{int(now.timestamp())}"}},
         "sendUpdates": "all"
     }

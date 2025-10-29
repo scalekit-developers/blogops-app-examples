@@ -48,37 +48,124 @@ def parse_entities(subject: str, body_raw: str, headers: Dict, *,
     else:
         duration = default_duration
 
-    # tz hint
+    # tz hint (scan subject + body)
     tz_hint = None
     for rx, tz in TZ_HINTS:
-        if rx.search(body):
+        if rx.search(subject or "") or rx.search(body):
             tz_hint = tz
             break
 
     # exact datetime candidates (subject + body)
     text_all = f"{subject or ''}\n{body}"
+    # If subject contains a 4-digit year, remember it to correct parser heuristics
+    expected_year = None
+    m_year = re.search(r"\b(20\d{2})\b", subject or "")
+    if m_year:
+        try:
+            expected_year = int(m_year.group(1))
+        except Exception:
+            expected_year = None
     hard_start = None
     hard_end = None
     local_tz = pytz.timezone(tz_hint or user_tz)
 
-    candidates = re.findall(
-        r"([A-Za-z]{3,9}\s+\d{1,2}.*?\d{1,2}(:\d{2})?\s*(am|pm)?)|(\d{4}-\d{2}-\d{2}[\sT]\d{1,2}:\d{2})",
-        text_all,
-        flags=re.I
+    # Strong subject pattern: "Tue Oct 28, 2025 5:45pm - 7:45pm (IST)"
+    subj_pat = re.compile(
+        r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+"
+        r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+"
+        r"(\d{1,2}),\s*(\d{4})\s+"
+        r"(\d{1,2}:\d{2})\s*(am|pm)"
+        r"(?:\s*[-–—]\s*(\d{1,2}:\d{2})\s*(am|pm))?",
+        re.I
     )
-    for tup in candidates:
-        text = next((t for t in tup if t), None)
-        if not text:
-            continue
+    m_subj = subj_pat.search(subject or "")
+    if m_subj:
+        dow, mon_abbr, day, year, t1, ap1, t2, ap2 = (
+            m_subj.group(1), m_subj.group(2), m_subj.group(3), m_subj.group(4),
+            m_subj.group(5), m_subj.group(6), m_subj.group(7), m_subj.group(8)
+        )
+        month_map = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+        mo = month_map.index(mon_abbr.title()) + 1
+        hh, mm = map(int, t1.split(":"))
+        if ap1.lower() == "pm" and hh != 12:
+            hh += 12
+        if ap1.lower() == "am" and hh == 12:
+            hh = 0
+        local_tz = pytz.timezone(tz_hint or user_tz)
         try:
-            settings = {"TIMEZONE": tz_hint or user_tz, "RETURN_AS_TIMEZONE_AWARE": True}
-            parsed = dateparser.parse(text, settings=settings)
-            if parsed:
-                hard_start = parsed
+            start_naive = datetime(int(year), mo, int(day), hh, mm)
+            hard_start = local_tz.localize(start_naive)
+            if t2 and ap2:
+                eh, em = map(int, t2.split(":"))
+                if ap2.lower() == "pm" and eh != 12:
+                    eh += 12
+                if ap2.lower() == "am" and eh == 12:
+                    eh = 0
+                end_naive = datetime(int(year), mo, int(day), eh, em)
+                hard_end = local_tz.localize(end_naive)
+                # Update duration from explicit end time
+                try:
+                    duration = max(1, int((hard_end - hard_start).total_seconds() // 60))
+                except Exception:
+                    pass
+            else:
                 hard_end = hard_start + timedelta(minutes=duration)
-                break
         except Exception:
-            continue
+            hard_start = None
+            hard_end = None
+
+    # Generic parse fallback across subject+body if still missing
+    if not hard_start:
+        candidates = re.findall(
+            r"([A-Za-z]{3,9}\s+\d{1,2}.*?\d{1,2}(:\d{2})?\s*(am|pm)?)|(\d{4}-\d{2}-\d{2}[\sT]\d{1,2}:\d{2})",
+            text_all,
+            flags=re.I
+        )
+        for tup in candidates:
+            text = next((t for t in tup if t), None)
+            if not text:
+                continue
+            try:
+                settings = {"TIMEZONE": tz_hint or user_tz, "RETURN_AS_TIMEZONE_AWARE": True}
+                parsed = dateparser.parse(text, settings=settings)
+                if parsed:
+                    hard_start = parsed
+                    hard_end = hard_start + timedelta(minutes=duration)
+                    break
+            except Exception:
+                continue
+
+    # Final correction: if parser chose an obviously wrong or past year but subject had a year
+    if hard_start and expected_year and hard_start.year != expected_year:
+        try:
+            local_tz = pytz.timezone(tz_hint or user_tz)
+            s_local = hard_start.astimezone(local_tz) if hard_start.tzinfo else local_tz.localize(hard_start)
+            corrected = s_local.replace(year=expected_year)
+            hard_end = corrected + timedelta(minutes=duration)
+            hard_start = corrected
+        except Exception:
+            pass
+
+    # Also, if parsed time is > 365 days in the past relative to now, bump to next occurrence of that month/day
+    if hard_start:
+        try:
+            now_local = datetime.now(pytz.timezone(tz_hint or user_tz))
+            if (now_local - hard_start).days > 365:
+                y = now_local.year if hard_start.month >= now_local.month else now_local.year + 1
+                local_tz = pytz.timezone(tz_hint or user_tz)
+                s_local = hard_start.astimezone(local_tz)
+                corrected = local_tz.localize(datetime(y, s_local.month, s_local.day, s_local.hour, s_local.minute))
+                hard_end = corrected + timedelta(minutes=duration)
+                hard_start = corrected
+        except Exception:
+            pass
+
+    # Final sync: if both hard_start and hard_end present, ensure duration matches
+    if hard_start and hard_end:
+        try:
+            duration = max(1, int((hard_end - hard_start).total_seconds() // 60))
+        except Exception:
+            pass
 
     # NEW: date-only patterns → default to WORK_START_LOCAL time
     if not hard_start:

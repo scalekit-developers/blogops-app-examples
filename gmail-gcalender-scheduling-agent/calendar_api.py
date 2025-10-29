@@ -61,21 +61,34 @@ def create_event(identifier: str, calendar_id: str, event: Dict[str, Any]) -> Di
             return {"error": "Conflict with existing event. Choose another time."}
 
     attendees_emails = []
+    attendees_objs = []
     for a in event.get("attendees") or []:
         if isinstance(a, dict) and a.get("email"):
-            attendees_emails.append(a["email"])
+            email = a["email"]
+            attendees_emails.append(email)
+            attendees_objs.append({"email": email, "optional": bool(a.get("optional", False))})
         elif isinstance(a, str):
             attendees_emails.append(a)
+            attendees_objs.append({"email": a})
 
+    send_updates_value = event.get("sendUpdates") or "all"
     params = {
         "calendarId": calendar_id,
+        # Keep snake_case for compatibility with connector variants
         "start_datetime": start_dt,
         "end_datetime": end_dt,
         "time_zone": tz,
+        # Also include camelCase variants (some connectors expect these)
+        "startDateTime": start_dt,
+        "endDateTime": end_dt,
+        "timeZone": tz,
         "summary": event.get("summary") or "Meeting",
         "description": event.get("description") or "",
-        "attendees": attendees_emails,
-        "send_updates": event.get("sendUpdates") or "all",
+        # Prefer structured attendees
+        "attendees": attendees_objs or attendees_emails,
+        # Include both key styles for send updates
+        "send_updates": send_updates_value,
+        "sendUpdates": send_updates_value,
         "conference": True
     }
 
