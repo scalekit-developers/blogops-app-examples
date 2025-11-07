@@ -1,0 +1,22 @@
+# Example Scalekit credentials for Spring Boot
+scalekit.client_id=YOUR_CLIENT_ID
+scalekit.client_secret=YOUR_CLIENT_SECRET
+scalekit.environment_url=https://your-scalekit-environment.com
+
+# Optional: server port and logging
+server.port=8080
+logging.level.root=INFO
+
+# Magic link callback URL (used by AuthService to set SendPasswordlessOptions.magiclinkAuthUri)
+scalekit.magiclink_auth_uri=http://localhost:8080/auth/callback
+
+# --- JPA / H2 (Dev) ---
+# In-memory H2 database for local development
+spring.datasource.url=jdbc:h2:mem:passwordlessdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
