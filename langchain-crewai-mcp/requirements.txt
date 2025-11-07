@@ -1,0 +1,7 @@
+pydantic>=2.12
+requests>=2.32.4
+langchain-core>=0.2.29
+crewai>=0.51.0
+pytest>=8.2
+mcp>=1.19.0
+python-dotenv>=1.0
