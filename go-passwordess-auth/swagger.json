@@ -1,0 +1,149 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Passwordless Auth API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/callback": {
+      "get": {
+        "summary": "Magic link callback",
+        "description": "Completes magic link verification by reading link_token from the URL and using authRequestId from the session.",
+        "parameters": [
+          {
+            "name": "link_token",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Token from the magic link URL"
+          },
+          {
+            "name": "redirect",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "/docs" },
+            "description": "Where to redirect after successful verification"
+          }
+        ],
+        "responses": {
+          "302": { "description": "Redirect to target page after verification" },
+          "400": { "description": "Missing session or parameters" },
+          "401": { "description": "Invalid or expired magic link" }
+        }
+      }
+    },
+    "/request-auth": {
+      "post": {
+        "summary": "Request Magic Link or OTP",
+  "description": "Request a passwordless email. Scalekit backend will decide whether it's a magic link or OTP based on configuration.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "your@email.com" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Magic link or OTP sent" }
+        }
+      }
+    },
+    "/verify-magic-link": {
+      "post": {
+        "summary": "Verify Magic Link",
+        "description": "Provide only the token from your magic link URL (the 'link_token' value).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": { "type": "string", "example": "070e7860-7d05-4b88-9731-205fa551f5f7_l" }
+                },
+                "required": ["token"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Magic link verified" },
+          "401": { "description": "Invalid magic link or request ID" }
+        }
+      }
+    },
+    "/verify-otp": {
+      "post": {
+        "summary": "Verify OTP",
+        "description": "Provide only the OTP. Email and request ID are retrieved from the session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp": { "type": "string", "example": "123456" }
+                },
+                "required": ["otp"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP verified" },
+          "401": { "description": "Invalid OTP" }
+        }
+      }
+    },
+    "/whoami": {
+      "get": {
+        "summary": "Who am I (Session Info)",
+        "description": "Returns the current signed-in user's email, or 401 if not authorized.",
+        "responses": {
+          "200": {
+            "description": "Current user info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string", "example": "your@email.com" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "Not authorized" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "summary": "Logout",
+        "responses": {
+          "200": { "description": "Logged out" }
+        }
+      }
+    }
+  }
+}
