@@ -1,0 +1,21 @@
+# Minimal ignore for this Salesforce → Slack agent
+
+# Secrets and local run-state
+.env
+sf_insights_snapshot.json
+
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Editor/OS cruft
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
