@@ -2,6 +2,8 @@
 
 This repository contains a collection of **Scalekit SDK** integration examples, demonstrating how to implement **Single Sign-On (SSO), Social Login, and Enterprise Authentication** across different applications. The Scalekit SDK provides a seamless authentication layer, allowing developers to integrate **identity providers (IdPs)** like **PingIdentity, Okta, Microsoft Entra ID, Google, and more** with minimal effort.
 
+Scalekit provides auth and actions on behalf of users, with 500+ connectors and 20,000+ tools.
+
 Explore how to integrate **SSO and authentication workflows** into your applications using Scalekit.
 
 ## Overview
