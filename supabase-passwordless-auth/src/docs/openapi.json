@@ -1,0 +1,208 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Scalekit Passwordless Auth API",
+    "version": "0.1.0",
+    "description": "Minimal passwordless sample: send, resend, verify (code/link), session user, logout."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local dev"
+    }
+  ],
+  "paths": {
+    "/auth/passwordless/email/send": {
+      "post": {
+        "summary": "Send passwordless email (email only)",
+        "tags": [
+          "Passwordless"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email dispatched"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/auth/passwordless/email/resend": {
+      "post": {
+        "summary": "Resend passwordless email",
+        "tags": [
+          "Passwordless"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "authRequestId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "authRequestId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resent"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/auth/passwordless/email/verify/code": {
+      "post": {
+        "summary": "Verify passwordless code",
+        "tags": [
+          "Passwordless"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "authRequestId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code",
+                  "authRequestId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verified"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/auth/passwordless/verify": {
+      "get": {
+        "summary": "Magic link verification",
+        "tags": [
+          "Passwordless"
+        ],
+        "parameters": [
+          {
+            "name": "link_token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "auth_request_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout (destroy session)",
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": [
+          "Utility"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "Current session user",
+        "tags": [
+          "Utility"
+        ],
+        "responses": {
+          "200": {
+            "description": "User"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}
